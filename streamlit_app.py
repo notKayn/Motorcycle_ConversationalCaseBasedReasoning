@@ -50,9 +50,9 @@ case_matrix = case_vector_df.to_numpy()
 
 json_key = st.secrets["gcp_service_account"]
 with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp:
-        json.dump(json_key, tmp)
-        tmp.flush()
-        creds_path = tmp.name
+    json.dump(json_key, tmp)
+    tmp.flush()
+    creds_path = tmp.name
     
 gc = pygsheets.authorize(service_account_file=creds_path)
 
