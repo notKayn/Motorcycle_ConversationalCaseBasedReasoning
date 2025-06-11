@@ -48,6 +48,8 @@ final_df = load_final_df()
 case_vector_df = load_case_vector_df()
 case_matrix = case_vector_df.to_numpy()
 
+json_key = st.secrets["gcp_service_account"]
+gc = pygsheets.authorize(service_account_env_var=False, service_account_json=json_key)
 
 
 # =================== Fungsi segmentasi tahap proses ===================
@@ -934,9 +936,10 @@ def format_data_for_gsheet(data_dict):
 # ==========================
 # Kirim data user testing ke Google Sheets
 # ==========================
-def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="Sheet1", credentials_path="service_account.json"):
+def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testing"):
     try:
-        gc = pygsheets.authorize(service_file=credentials_path)
+        json_key = st.secrets["gcp_service_account"]
+        gc = pygsheets.authorize(service_account_env_var=False, service_account_json=json_key)
         sh = gc.open_by_key(spreadsheet_id)
         wks = sh.worksheet_by_title(sheet_name)
 
@@ -955,8 +958,9 @@ def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="Sheet1", credent
 # ==========================
 # Load case base dari Google Sheets (digunakan oleh hitung_model_terpopuler_dari_case_gsheet)
 # ==========================
-def load_case_base_from_gsheet(spreadsheet_id, sheet_name="CaseBase", credentials_path="service_account.json"):
-    gc = pygsheets.authorize(service_file=credentials_path)
+def load_case_base_from_gsheet(spreadsheet_id, sheet_name="CaseBase"):
+    json_key = st.secrets["gcp_service_account"]
+    gc = pygsheets.authorize(service_account_env_var=False, service_account_json=json_key)
     sh = gc.open_by_key(spreadsheet_id)
     wks = sh.worksheet_by_title(sheet_name)
     records = wks.get_all_records()
@@ -1023,7 +1027,8 @@ def simpan_case_model_gsheet(user_input, row_model, spreadsheet_id, sheet_name="
     }
 
     # Connect ke GSheet
-    gc = pygsheets.authorize(service_file="service_account.json")
+    json_key = st.secrets["gcp_service_account"]
+    gc = pygsheets.authorize(service_account_env_var=False, service_account_json=json_key)
     sh = gc.open_by_key(spreadsheet_id)
     wks = sh.worksheet_by_title(sheet_name)
 
