@@ -939,7 +939,12 @@ def format_data_for_gsheet(data_dict):
 def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testing"):
     try:
         json_key = st.secrets["gcp_service_account"]
-        gc = pygsheets.authorize(service_account_env_var=False, service_account_json=json_key)
+        with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp:
+            json.dump(json_key, tmp)
+            tmp.flush()
+            creds_path = tmp.name
+        
+        gc = pygsheets.authorize(service_account_file=creds_path)
         sh = gc.open_by_key(spreadsheet_id)
         wks = sh.worksheet_by_title(sheet_name)
 
@@ -960,7 +965,12 @@ def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testi
 # ==========================
 def load_case_base_from_gsheet(spreadsheet_id, sheet_name="CaseBase"):
     json_key = st.secrets["gcp_service_account"]
-    gc = pygsheets.authorize(service_account_env_var=False, service_account_json=json_key)
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp:
+            json.dump(json_key, tmp)
+            tmp.flush()
+            creds_path = tmp.name
+    
+    gc = pygsheets.authorize(service_account_file=creds_path)
     sh = gc.open_by_key(spreadsheet_id)
     wks = sh.worksheet_by_title(sheet_name)
     records = wks.get_all_records()
@@ -1028,7 +1038,12 @@ def simpan_case_model_gsheet(user_input, row_model, spreadsheet_id, sheet_name="
 
     # Connect ke GSheet
     json_key = st.secrets["gcp_service_account"]
-    gc = pygsheets.authorize(service_account_env_var=False, service_account_json=json_key)
+    with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp:
+            json.dump(json_key, tmp)
+            tmp.flush()
+            creds_path = tmp.name
+    
+    gc = pygsheets.authorize(service_account_file=creds_path)
     sh = gc.open_by_key(spreadsheet_id)
     wks = sh.worksheet_by_title(sheet_name)
 
