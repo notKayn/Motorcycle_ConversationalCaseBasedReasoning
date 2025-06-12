@@ -197,21 +197,89 @@ def step_query_based():
             st.session_state.step = "input"
             st.rerun()
 
-def step_input():
+# def step_input():
 
+#     st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Case-Based")
+
+#     st.markdown("""
+#     Sistem rekomendasi ini menggunakan pendekatan **Conversational Case-based Reasoning**, dimana user mendapat rekomendasi berdasarkan pengalaman pengguna lain yang memiliki preferensi serupa.
+#                 Jika tidak ada rekam jejak pengguna lain dengan preferensi yang sama, sistem akan menghitung kemiripan secara otomatis. Disini, bila hasil rekomendasi belum memenuhi preferensi kamu,
+#                 kamu bisa melakukan **refinement** untuk memperbaiki hasil rekomendasi agar lebih sesuai dengan keinginanmu.
+
+#     Singkatnya:
+#     - Case-based Reasoning: sistem akan mencari rekam jejak pengguna lain yang memiliki preferensi serupa denganmu atau mencari kemiripan dengan data yang ada.
+#     - Conversational: kamu bisa berinteraksi dengan sistem untuk memperbaiki hasil rekomendasi agar lebih sesuai dengan keinginanmu.
+                
+#     Jadi, walau kamu minta rekomendasi motor yang cukup spesifik, sistem akan tetap berusaha memberikan rekomendasi yang relevan berdasarkan data yang ada.
+#     """)
+#     st.markdown("---")
+#     st.subheader("🛠️ Langkah 1: Pilih Atribut dan Isi Preferensi")
+
+#     opsi_atribut = [
+#         "Category", "Displacement", "PowerHP", "Brand", "Transmission",
+#         "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
+#         "FuelConsumptionKML", "Price"
+#     ]
+
+#     numeric_ranges = {
+#         "Displacement": (50, 1900, 150),
+#         "PowerHP": (3, 240, 15),
+#         "FuelTank": (2, 30, 5),
+#         "WeightKG": (70, 450, 100),
+#         "FuelConsumptionKML": (10, 100, 40),
+#         "Price": (10_000_000, 1_450_000_000_000, 25_000_000)
+#     }
+
+#     st.markdown("✅ Checklist atribut yang ingin kamu isi:")
+
+#     # Reset isi preferensi tiap kali buka halaman
+#     st.session_state.selected_attrs = []
+#     st.session_state.user_input = {}
+
+#     for attr in opsi_atribut:
+#         aktif = st.checkbox(f"Gunakan {attr}", key=f"aktif_{attr}")
+
+#         if aktif:
+#             st.session_state.selected_attrs.append(attr)
+
+#             if attr in numeric_ranges:
+#                 min_val, max_val, default_val = numeric_ranges[attr]
+#                 val = st.number_input(
+#                     f"{attr}:", min_value=min_val, max_value=max_val,
+#                     value=default_val, step=1, key=f"val_{attr}"
+#                 )
+
+#             # Harga (input angka)
+#             elif attr == "Price":
+#                 val = st.number_input(f"{attr} (Rp):", 10_000_000, 1_500_000_000, 25_000_000, key=f"val_{attr}")
+
+#             # Kategorikal (pakai selectbox dari df_mentah)
+#             elif attr in df.columns:
+#                 options = sorted(df[attr].dropna().unique())
+#                 val = st.selectbox(f"{attr}:", options, key=f"val_{attr}")
+
+#             # Fallback kalau datanya gak ketemu
+#             else:
+#                 val = st.text_input(f"{attr}:", key=f"val_{attr}")
+
+#             st.session_state.user_input[attr] = val
+
+#     if st.button("➡️ Lanjut ke Prioritas") and st.session_state.selected_attrs:
+#         st.session_state.step = "prioritas"
+#         st.rerun()
+
+def step_input():
     st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Case-Based")
 
     st.markdown("""
-    Sistem rekomendasi ini menggunakan pendekatan **Conversational Case-based Reasoning**, dimana user mendapat rekomendasi berdasarkan pengalaman pengguna lain yang memiliki preferensi serupa.
-                Jika tidak ada rekam jejak pengguna lain dengan preferensi yang sama, sistem akan menghitung kemiripan secara otomatis. Disini, bila hasil rekomendasi belum memenuhi preferensi kamu,
-                kamu bisa melakukan **refinement** untuk memperbaiki hasil rekomendasi agar lebih sesuai dengan keinginanmu.
+    Sistem rekomendasi ini menggunakan pendekatan **Conversational Case-based Reasoning**, 
+    dimana user mendapat rekomendasi berdasarkan pengalaman pengguna lain yang memiliki preferensi serupa.
 
-    Singkatnya:
-    - Case-based Reasoning: sistem akan mencari rekam jejak pengguna lain yang memiliki preferensi serupa denganmu atau mencari kemiripan dengan data yang ada.
-    - Conversational: kamu bisa berinteraksi dengan sistem untuk memperbaiki hasil rekomendasi agar lebih sesuai dengan keinginanmu.
-                
-    Jadi, walau kamu minta rekomendasi motor yang cukup spesifik, sistem akan tetap berusaha memberikan rekomendasi yang relevan berdasarkan data yang ada.
+    Jika tidak ada rekam jejak pengguna lain dengan preferensi yang sama, 
+    sistem akan menghitung kemiripan secara otomatis. Bila hasil rekomendasi belum memenuhi preferensi kamu, 
+    kamu bisa melakukan **refinement** untuk memperbaiki hasil rekomendasi agar lebih sesuai dengan keinginanmu.
     """)
+
     st.markdown("---")
     st.subheader("🛠️ Langkah 1: Pilih Atribut dan Isi Preferensi")
 
@@ -220,6 +288,21 @@ def step_input():
         "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
         "FuelConsumptionKML", "Price"
     ]
+
+    # Label dalam Bahasa Indonesia
+    label_mapping = {
+        "Category": "Kategori",
+        "Displacement": "Kapasitas Mesin (cc)",
+        "PowerHP": "Tenaga Maksimum (HP)",
+        "Brand": "Merek",
+        "Transmission": "Transmisi",
+        "ClutchType": "Jenis Kopling",
+        "EngineConfig": "Konfigurasi Mesin",
+        "FuelTank": "Kapasitas Tangki (L)",
+        "WeightKG": "Berat Motor (kg)",
+        "FuelConsumptionKML": "Konsumsi BBM (km/L)",
+        "Price": "Harga (Rp)"
+    }
 
     numeric_ranges = {
         "Displacement": (50, 1900, 150),
@@ -232,35 +315,37 @@ def step_input():
 
     st.markdown("✅ Checklist atribut yang ingin kamu isi:")
 
-    # Reset isi preferensi tiap kali buka halaman
+    # Reset setiap kali halaman ini diakses ulang
     st.session_state.selected_attrs = []
     st.session_state.user_input = {}
 
     for attr in opsi_atribut:
-        aktif = st.checkbox(f"Gunakan {attr}", key=f"aktif_{attr}")
+        label = label_mapping.get(attr, attr)
+        aktif = st.checkbox(f"Gunakan {label}", key=f"aktif_{attr}")
 
         if aktif:
             st.session_state.selected_attrs.append(attr)
 
+            # Input nilai berdasarkan tipe
             if attr in numeric_ranges:
                 min_val, max_val, default_val = numeric_ranges[attr]
                 val = st.number_input(
-                    f"{attr}:", min_value=min_val, max_value=max_val,
+                    f"{label}:", min_value=min_val, max_value=max_val,
                     value=default_val, step=1, key=f"val_{attr}"
                 )
 
-            # Harga (input angka)
             elif attr == "Price":
-                val = st.number_input(f"{attr} (Rp):", 10_000_000, 1_500_000_000, 25_000_000, key=f"val_{attr}")
+                val = st.number_input(
+                    f"{label}:", 10_000_000, 1_500_000_000,
+                    25_000_000, step=1_000_000, key=f"val_{attr}"
+                )
 
-            # Kategorikal (pakai selectbox dari df_mentah)
             elif attr in df.columns:
                 options = sorted(df[attr].dropna().unique())
-                val = st.selectbox(f"{attr}:", options, key=f"val_{attr}")
+                val = st.selectbox(f"{label}:", options, key=f"val_{attr}")
 
-            # Fallback kalau datanya gak ketemu
             else:
-                val = st.text_input(f"{attr}:", key=f"val_{attr}")
+                val = st.text_input(f"{label}:", key=f"val_{attr}")
 
             st.session_state.user_input[attr] = val
 
