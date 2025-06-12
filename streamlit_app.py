@@ -197,76 +197,6 @@ def step_query_based():
             st.session_state.step = "input"
             st.rerun()
 
-# def step_input():
-
-#     st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Case-Based")
-
-#     st.markdown("""
-#     Sistem rekomendasi ini menggunakan pendekatan **Conversational Case-based Reasoning**, dimana user mendapat rekomendasi berdasarkan pengalaman pengguna lain yang memiliki preferensi serupa.
-#                 Jika tidak ada rekam jejak pengguna lain dengan preferensi yang sama, sistem akan menghitung kemiripan secara otomatis. Disini, bila hasil rekomendasi belum memenuhi preferensi kamu,
-#                 kamu bisa melakukan **refinement** untuk memperbaiki hasil rekomendasi agar lebih sesuai dengan keinginanmu.
-
-#     Singkatnya:
-#     - Case-based Reasoning: sistem akan mencari rekam jejak pengguna lain yang memiliki preferensi serupa denganmu atau mencari kemiripan dengan data yang ada.
-#     - Conversational: kamu bisa berinteraksi dengan sistem untuk memperbaiki hasil rekomendasi agar lebih sesuai dengan keinginanmu.
-                
-#     Jadi, walau kamu minta rekomendasi motor yang cukup spesifik, sistem akan tetap berusaha memberikan rekomendasi yang relevan berdasarkan data yang ada.
-#     """)
-#     st.markdown("---")
-#     st.subheader("🛠️ Langkah 1: Pilih Atribut dan Isi Preferensi")
-
-#     opsi_atribut = [
-#         "Category", "Displacement", "PowerHP", "Brand", "Transmission",
-#         "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
-#         "FuelConsumptionKML", "Price"
-#     ]
-
-#     numeric_ranges = {
-#         "Displacement": (50, 1900, 150),
-#         "PowerHP": (3, 240, 15),
-#         "FuelTank": (2, 30, 5),
-#         "WeightKG": (70, 450, 100),
-#         "FuelConsumptionKML": (10, 100, 40),
-#         "Price": (10_000_000, 1_450_000_000_000, 25_000_000)
-#     }
-
-#     st.markdown("✅ Checklist atribut yang ingin kamu isi:")
-
-#     # Reset isi preferensi tiap kali buka halaman
-#     st.session_state.selected_attrs = []
-#     st.session_state.user_input = {}
-
-#     for attr in opsi_atribut:
-#         aktif = st.checkbox(f"Gunakan {attr}", key=f"aktif_{attr}")
-
-#         if aktif:
-#             st.session_state.selected_attrs.append(attr)
-
-#             if attr in numeric_ranges:
-#                 min_val, max_val, default_val = numeric_ranges[attr]
-#                 val = st.number_input(
-#                     f"{attr}:", min_value=min_val, max_value=max_val,
-#                     value=default_val, step=1, key=f"val_{attr}"
-#                 )
-
-#             # Harga (input angka)
-#             elif attr == "Price":
-#                 val = st.number_input(f"{attr} (Rp):", 10_000_000, 1_500_000_000, 25_000_000, key=f"val_{attr}")
-
-#             # Kategorikal (pakai selectbox dari df_mentah)
-#             elif attr in df.columns:
-#                 options = sorted(df[attr].dropna().unique())
-#                 val = st.selectbox(f"{attr}:", options, key=f"val_{attr}")
-
-#             # Fallback kalau datanya gak ketemu
-#             else:
-#                 val = st.text_input(f"{attr}:", key=f"val_{attr}")
-
-#             st.session_state.user_input[attr] = val
-
-#     if st.button("➡️ Lanjut ke Prioritas") and st.session_state.selected_attrs:
-#         st.session_state.step = "prioritas"
-#         st.rerun()
 
 def step_input():
     st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Case-Based")
@@ -514,6 +444,97 @@ def step_rekomendasi():
                 st.session_state.step = "survey_1"
                 st.rerun()
 
+# def step_refinement():
+#     st.subheader("🔧 Langkah 4: Refinement Interaktif")
+
+#     iterasi = len(st.session_state.get("refine_steps", [])) + 1
+#     st.markdown(f"##### 🔁 Refinement Iterasi ke-{iterasi}")
+
+#     if "refine_base_model" not in st.session_state:
+#         st.error("Tidak ada referensi motor untuk refinement.")
+#         return
+
+#     model_awal = st.session_state.refine_base_model
+#     user_input = st.session_state.user_input.copy()
+
+#     st.markdown("##### 📌 Model Referensi (Top-1 Terakhir):")
+#     tampilkan_model(
+#         model_awal,
+#         judul=f"**{(model_awal.get('Model', 'Tidak Diketahui')).upper()}**"
+#     )
+
+#     st.markdown("##### ✍️ Ubah Preferensi yang Ingin Diperbaiki:")
+
+#     opsi_atribut = [
+#         "Category", "Displacement", "PowerHP", "Brand", "Transmission",
+#         "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
+#         "FuelConsumptionKML", "Price"
+#     ]
+
+#     numeric_ranges = {
+#         "Displacement": (50, 1900, 150),
+#         "PowerHP": (3, 240, 15),
+#         "FuelTank": (2, 30, 5),
+#         "WeightKG": (70, 450, 100),
+#         "FuelConsumptionKML": (10, 100, 40),
+#         "Price": (10_000_000, 1_450_000_000, 25_000_000)
+#     }
+
+#     st.markdown("###### *Checklist atribut yang ingin kamu ubah atau tambahkan")
+
+#     refine_selected_attrs = []
+#     perubahan = {}
+
+#     for attr in opsi_atribut:
+#         val_lama = user_input.get(attr, None)
+#         label = f"{attr} (saat ini: `{val_lama}`)" if val_lama else f"{attr} (tidak diubah)"
+#         aktif = st.checkbox(label, key=f"aktif_refine_{attr}")
+
+#         if aktif:
+#             refine_selected_attrs.append(attr)
+
+#             # Kategorikal
+#             if attr in df.columns and df[attr].dtype == object:
+#                 opsi = sorted(df[attr].dropna().unique())
+#                 index_default = opsi.index(val_lama) if val_lama in opsi else 0
+#                 val_baru = st.selectbox(
+#                     f"Update {attr}:", opsi, index=index_default,
+#                     key=f"refine_val_{attr}"
+#                 )
+
+#             # Numerik
+#             elif attr in numeric_ranges:
+#                 min_val, max_val, default_val = numeric_ranges[attr]
+#                 val_baru = st.number_input(
+#                     f"Update {attr}:", min_value=min_val, max_value=max_val,
+#                     value=int(val_lama) if val_lama else default_val,
+#                     step=1, key=f"refine_val_{attr}"
+#                 )
+
+#             # Fallback
+#             else:
+#                 val_baru = st.text_input(f"Update {attr}:", val_lama or "", key=f"refine_val_{attr}")
+
+#             # Catat perubahan
+#             if val_baru != val_lama:
+#                 perubahan[attr] = (val_lama, val_baru)
+#                 user_input[attr] = val_baru
+
+#     if st.button("✅ Simpan & Hitung Ulang"):
+#         if perubahan:
+#             st.session_state.refine_steps.append(perubahan)
+#             st.session_state.user_input = user_input
+#             st.session_state.active_attrs_after_refine = sorted(set(user_input.keys()))
+#             st.session_state.step = "refine_prioritas"
+#             st.rerun()
+#         else:
+#             st.warning("⚠️ Tidak ada perubahan yang dilakukan.")
+
+#     if st.button("❌ Cancel dan keluar dari app"):
+#         st.success("Sesi refinement selesai. Menyimpan hasil final.")
+#         st.session_state.step = "survey_1"
+#         st.rerun()
+
 def step_refinement():
     st.subheader("🔧 Langkah 4: Refinement Interaktif")
 
@@ -541,6 +562,20 @@ def step_refinement():
         "FuelConsumptionKML", "Price"
     ]
 
+    label_mapping = {
+        "Category": "Kategori",
+        "Displacement": "Kapasitas Mesin (cc)",
+        "PowerHP": "Tenaga Maksimum (HP)",
+        "Brand": "Merek",
+        "Transmission": "Transmisi",
+        "ClutchType": "Jenis Kopling",
+        "EngineConfig": "Konfigurasi Mesin",
+        "FuelTank": "Kapasitas Tangki (L)",
+        "WeightKG": "Berat Motor (kg)",
+        "FuelConsumptionKML": "Konsumsi BBM (km/L)",
+        "Price": "Harga (Rp)"
+    }
+
     numeric_ranges = {
         "Displacement": (50, 1900, 150),
         "PowerHP": (3, 240, 15),
@@ -557,7 +592,8 @@ def step_refinement():
 
     for attr in opsi_atribut:
         val_lama = user_input.get(attr, None)
-        label = f"{attr} (saat ini: `{val_lama}`)" if val_lama else f"{attr} (tidak diubah)"
+        label_id = label_mapping.get(attr, attr)
+        label = f"{label_id} (saat ini: `{val_lama}`)" if val_lama else f"{label_id} (tidak diubah)"
         aktif = st.checkbox(label, key=f"aktif_refine_{attr}")
 
         if aktif:
@@ -568,7 +604,7 @@ def step_refinement():
                 opsi = sorted(df[attr].dropna().unique())
                 index_default = opsi.index(val_lama) if val_lama in opsi else 0
                 val_baru = st.selectbox(
-                    f"Update {attr}:", opsi, index=index_default,
+                    f"Update {label_id}:", opsi, index=index_default,
                     key=f"refine_val_{attr}"
                 )
 
@@ -576,16 +612,15 @@ def step_refinement():
             elif attr in numeric_ranges:
                 min_val, max_val, default_val = numeric_ranges[attr]
                 val_baru = st.number_input(
-                    f"Update {attr}:", min_value=min_val, max_value=max_val,
+                    f"Update {label_id}:", min_value=min_val, max_value=max_val,
                     value=int(val_lama) if val_lama else default_val,
                     step=1, key=f"refine_val_{attr}"
                 )
 
             # Fallback
             else:
-                val_baru = st.text_input(f"Update {attr}:", val_lama or "", key=f"refine_val_{attr}")
+                val_baru = st.text_input(f"Update {label_id}:", val_lama or "", key=f"refine_val_{attr}")
 
-            # Catat perubahan
             if val_baru != val_lama:
                 perubahan[attr] = (val_lama, val_baru)
                 user_input[attr] = val_baru
