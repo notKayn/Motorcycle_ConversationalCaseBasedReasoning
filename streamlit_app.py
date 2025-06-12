@@ -104,10 +104,8 @@ def step_identity():
     gender = st.radio("⚧️ Jenis Kelamin", ["Laki-laki", "Perempuan"], horizontal=True)
 
     tingkat = st.selectbox("📊 Seberapa paham kamu dengan spesifikasi motor?", [
-        "1 - Gak ngerti sama sekali (awam)",
-        "2 - Ngerti dasar-dasarnya aja",
-        "3 - Ngerti cukup teknis",
-        "4 - Ngerti teknis banget / biasa baca spek"
+        "1 - Saya hanya tahu secara umum.",
+        "2 - Saya cukup mengerti bagian teknisnya."
     ])
 
     # Optional (boleh diaktifin kalau perlu)
