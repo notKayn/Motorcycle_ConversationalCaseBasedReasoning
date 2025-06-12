@@ -1032,7 +1032,7 @@ def simpan_case_model_gsheet(user_input, row_model, spreadsheet_id, sheet_name="
         "refine_iteration_count": len(refine_log) if refine_log else 0,
         "chosen_models": json.dumps([{
             "model": row_model["Model"],
-            "similarity_score": float(row_model.get("Similarity", 0.0)),
+            "similarity_score": float(row_model["Similarity"]) if "Similarity" in row_model else None,
             "source": row_model.get("source", "cosine_similarity")
         }], ensure_ascii=False),
         "user_ranked": user_ranked,
