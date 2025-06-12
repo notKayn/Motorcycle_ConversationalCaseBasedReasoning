@@ -10,6 +10,7 @@ from collections import defaultdict, Counter, deque
 import streamlit.components.v1 as components
 import os
 import pygsheets
+import tempfile
 
 
 st.set_page_config(page_title="Sistem Rekomendasi Motor", layout="centered")
