@@ -140,7 +140,7 @@ def step_query_based():
     Jika tidak ada motor yang cocok, sistem akan memberi tahu bahwa tidak ada motor yang 100% sesuai dengan preferensimu.
     Karena query-based mencari data motor yang **sama persis** dengan apa yang kamu sebutkan, ada kemungkinan tidak ada model yang cocok ditemukan.
     
-    Hal ini mungkin terjadi dan sebagai contohnya, bila kamu mencari motor dengan kapasitas mesin 150cc, di atas kertas tidak ada motor yang memiliki kapasitas mesin 150cc rata, melainkan 149cc atau 151cc.
+    Hal ini mungkin terjadi dan sebagai contohnya, bila kamu mencari motor dengan kapasitas mesin 150cc, di atas kertas jarang sekali ada motor yang memiliki kapasitas mesin 150cc rata, melainkan 149cc atau 151cc.
                 
 
     """)
