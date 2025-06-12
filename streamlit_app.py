@@ -126,48 +126,125 @@ def step_identity():
         else:
             st.warning("⚠️ Nama dan usia wajib diisi terlebih dahulu.")
 
+# def step_query_based():
+#     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
+
+#     st.markdown("""
+#     Masukkan spesifikasi motor yang kamu inginkan. Sistem akan mencari motor yang **100% cocok** dengan semua preferensimu.
+                
+#                 Semakin sedikit atribut yang kamu isi,
+#                 semakin banyak kemungkinan hasil yang akan ditemukan.
+                
+#         Semakin banyak atribut yang diisi, 
+#                 semakin spesifik model motor yang ditunjukan (kalau ada). 
+#     Jika tidak ada motor yang cocok, sistem akan memberi tahu bahwa tidak ada motor yang 100% sesuai dengan preferensimu.
+#     Karena query-based mencari data motor yang **sama persis** dengan apa yang kamu sebutkan, ada kemungkinan tidak ada model yang cocok ditemukan.
+    
+#     Hal ini mungkin terjadi dan sebagai contohnya, bila kamu mencari motor dengan kapasitas mesin 150cc, di atas kertas jarang sekali ada motor yang memiliki kapasitas mesin 150cc rata, melainkan 149cc atau 151cc.
+                
+
+#     """)
+
+#     opsi_atribut = [
+#         "Category", "Displacement", "PowerHP", "Brand", "Transmission",
+#         "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
+#         "FuelConsumptionKML", "Price"
+#     ]
+
+#     preferensi = {}
+#     st.markdown("---")
+#     st.markdown("✅ Checklist atribut yang ingin kamu isi:")
+#     selected_attrs = []
+
+#     for attr in opsi_atribut:
+#         if st.checkbox(f"Gunakan {attr}", key=f"query_use_{attr}"):
+#             selected_attrs.append(attr)
+#             if attr in ["Displacement", "PowerHP", "FuelTank", "WeightKG", "FuelConsumptionKML"]:
+#                 preferensi[attr] = st.number_input(f"{attr}:", step=1, key=f"query_val_{attr}")
+#             elif attr == "Price":
+#                 preferensi[attr] = st.number_input(f"{attr} (Rp):", min_value=0, step=1_000_000, key=f"query_val_{attr}")
+#             elif attr in df.columns:
+#                 options = sorted(df[attr].dropna().unique())
+#                 preferensi[attr] = st.selectbox(f"{attr}:", options, key=f"query_val_{attr}")
+#             else:
+#                 preferensi[attr] = st.text_input(f"{attr}:", key=f"query_val_{attr}")
+
+#     st.markdown("---")
+
+#     if st.button("🔎 Cari Motor yang Cocok"):
+#         hasil = df.copy()
+#         for attr, val in preferensi.items():
+#             # Kalau numeric, cocokkan dengan toleransi kecil karena bisa float
+#             if pd.api.types.is_numeric_dtype(df[attr]):
+#                 hasil = hasil[np.isclose(hasil[attr], float(val), atol=1e-1)]
+#             else:
+#                 hasil = hasil[hasil[attr] == val]
+
+#         if not hasil.empty:
+#             st.success(f"🎉 Ditemukan {len(hasil)} motor yang cocok dengan preferensimu!")
+#             for i, row in hasil.iterrows():
+#                 tampilkan_model(row, judul=f"🏍️ {row['Model']}")
+#         else:
+#             st.warning("😕 Tidak ada motor yang 100% cocok dengan preferensimu.")
+
+#         # Simpan hasil + input ke session
+#         st.session_state.query_result = hasil.to_dict(orient="records")
+#         st.session_state.query_input = preferensi
+#         st.session_state.query_has_run = True  # ✅ Flag bahwa pencarian udah dijalankan
+
+#     if st.session_state.get("query_has_run"):
+#         if st.button("➡️ Lanjut ke Aplikasi 2 (Case-Based)"):
+#             st.session_state.step = "input"
+#             st.rerun()
+
 def step_query_based():
     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
 
     st.markdown("""
     Masukkan spesifikasi motor yang kamu inginkan. Sistem akan mencari motor yang **100% cocok** dengan semua preferensimu.
-                
-                Semakin sedikit atribut yang kamu isi,
-                semakin banyak kemungkinan hasil yang akan ditemukan.
-                
-        Semakin banyak atribut yang diisi, 
-                semakin spesifik model motor yang ditunjukan (kalau ada). 
-    Jika tidak ada motor yang cocok, sistem akan memberi tahu bahwa tidak ada motor yang 100% sesuai dengan preferensimu.
-    Karena query-based mencari data motor yang **sama persis** dengan apa yang kamu sebutkan, ada kemungkinan tidak ada model yang cocok ditemukan.
-    
-    Hal ini mungkin terjadi dan sebagai contohnya, bila kamu mencari motor dengan kapasitas mesin 150cc, di atas kertas jarang sekali ada motor yang memiliki kapasitas mesin 150cc rata, melainkan 149cc atau 151cc.
-                
 
+    🔹 Semakin sedikit atribut yang kamu isi, semakin banyak kemungkinan hasil yang akan ditemukan.  
+    🔹 Semakin banyak atribut yang diisi, semakin spesifik model motor yang ditunjukan (kalau ada).  
+    ⚠️ Sistem akan mencari **kecocokan yang benar-benar persis**, jadi kalau kamu isi kapasitas mesin 150cc, mungkin tidak ditemukan karena data bisa jadi 149.6 atau 151.2 cc.
+
+    Sistem ini **tidak mentoleransi perbedaan kecil**, jadi cocok digunakan untuk pencarian yang sangat spesifik.
     """)
 
-    opsi_atribut = [
-        "Category", "Displacement", "PowerHP", "Brand", "Transmission",
-        "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
-        "FuelConsumptionKML", "Price"
-    ]
+    # Label mapping untuk tampilan UI
+    label_mapping = {
+        "Category": "Kategori",
+        "Displacement": "Kapasitas Mesin (cc)",
+        "PowerHP": "Tenaga Maksimum (HP)",
+        "Brand": "Merek",
+        "Transmission": "Transmisi",
+        "ClutchType": "Jenis Kopling",
+        "EngineConfig": "Konfigurasi Mesin",
+        "FuelTank": "Kapasitas Tangki (L)",
+        "WeightKG": "Berat Motor (kg)",
+        "FuelConsumptionKML": "Konsumsi BBM (km/L)",
+        "Price": "Harga (Rp)"
+    }
 
+    opsi_atribut = list(label_mapping.keys())
     preferensi = {}
-    st.markdown("---")
-    st.markdown("✅ Checklist atribut yang ingin kamu isi:")
     selected_attrs = []
 
+    st.markdown("✅ Checklist atribut yang ingin kamu isi:")
+
     for attr in opsi_atribut:
-        if st.checkbox(f"Gunakan {attr}", key=f"query_use_{attr}"):
+        label_id = label_mapping.get(attr, attr)
+        if st.checkbox(f"Gunakan {label_id}", key=f"query_use_{attr}"):
             selected_attrs.append(attr)
+
             if attr in ["Displacement", "PowerHP", "FuelTank", "WeightKG", "FuelConsumptionKML"]:
-                preferensi[attr] = st.number_input(f"{attr}:", step=1, key=f"query_val_{attr}")
+                preferensi[attr] = st.number_input(f"{label_id}:", step=1, key=f"query_val_{attr}")
             elif attr == "Price":
-                preferensi[attr] = st.number_input(f"{attr} (Rp):", min_value=0, step=1_000_000, key=f"query_val_{attr}")
+                preferensi[attr] = st.number_input(f"{label_id}:", min_value=0, step=1_000_000, key=f"query_val_{attr}")
             elif attr in df.columns:
                 options = sorted(df[attr].dropna().unique())
-                preferensi[attr] = st.selectbox(f"{attr}:", options, key=f"query_val_{attr}")
+                preferensi[attr] = st.selectbox(f"{label_id}:", options, key=f"query_val_{attr}")
             else:
-                preferensi[attr] = st.text_input(f"{attr}:", key=f"query_val_{attr}")
+                preferensi[attr] = st.text_input(f"{label_id}:", key=f"query_val_{attr}")
 
     st.markdown("---")
 
@@ -187,7 +264,6 @@ def step_query_based():
         else:
             st.warning("😕 Tidak ada motor yang 100% cocok dengan preferensimu.")
 
-        # Simpan hasil + input ke session
         st.session_state.query_result = hasil.to_dict(orient="records")
         st.session_state.query_input = preferensi
         st.session_state.query_has_run = True  # ✅ Flag bahwa pencarian udah dijalankan
@@ -196,6 +272,7 @@ def step_query_based():
         if st.button("➡️ Lanjut ke Aplikasi 2 (Case-Based)"):
             st.session_state.step = "input"
             st.rerun()
+
 
 
 def step_input():
