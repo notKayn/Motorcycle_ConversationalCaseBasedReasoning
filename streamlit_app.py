@@ -49,13 +49,12 @@ final_df = load_final_df()
 case_vector_df = load_case_vector_df()
 case_matrix = case_vector_df.to_numpy()
 
-json_key = st.secrets["gcp_service_account"]
-with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp:
+json_key = dict(st.secrets["gcp_service_account"])
+with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w") as tmp:
     json.dump(json_key, tmp)
-    tmp.flush()
-    creds_path = tmp.name
-    
-gc = pygsheets.authorize(service_account_file=creds_path)
+    tmp_path = tmp.name
+
+gc = pygsheets.authorize(service_file=tmp_path)
 
 
 # =================== Fungsi segmentasi tahap proses ===================
@@ -944,13 +943,12 @@ def format_data_for_gsheet(data_dict):
 # ==========================
 def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testing"):
     try:
-        json_key = st.secrets["gcp_service_account"]
-        with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp:
+        json_key = dict(st.secrets["gcp_service_account"])
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w") as tmp:
             json.dump(json_key, tmp)
-            tmp.flush()
-            creds_path = tmp.name
+            tmp_path = tmp.name
         
-        gc = pygsheets.authorize(service_account_file=creds_path)
+        gc = pygsheets.authorize(service_file=tmp_path)
         sh = gc.open_by_key(spreadsheet_id)
         wks = sh.worksheet_by_title(sheet_name)
 
@@ -970,13 +968,12 @@ def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testi
 # Load case base dari Google Sheets (digunakan oleh hitung_model_terpopuler_dari_case_gsheet)
 # ==========================
 def load_case_base_from_gsheet(spreadsheet_id, sheet_name="CaseBase"):
-    json_key = st.secrets["gcp_service_account"]
-    with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp:
-            json.dump(json_key, tmp)
-            tmp.flush()
-            creds_path = tmp.name
+    json_key = dict(st.secrets["gcp_service_account"])
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w") as tmp:
+        json.dump(json_key, tmp)
+        tmp_path = tmp.name
     
-    gc = pygsheets.authorize(service_account_file=creds_path)
+    gc = pygsheets.authorize(service_file=tmp_path)
     sh = gc.open_by_key(spreadsheet_id)
     wks = sh.worksheet_by_title(sheet_name)
     records = wks.get_all_records()
@@ -1043,13 +1040,12 @@ def simpan_case_model_gsheet(user_input, row_model, spreadsheet_id, sheet_name="
     }
 
     # Connect ke GSheet
-    json_key = st.secrets["gcp_service_account"]
-    with tempfile.NamedTemporaryFile(mode="w+", delete=False, suffix=".json") as tmp:
-            json.dump(json_key, tmp)
-            tmp.flush()
-            creds_path = tmp.name
+    json_key = dict(st.secrets["gcp_service_account"])
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w") as tmp:
+        json.dump(json_key, tmp)
+        tmp_path = tmp.name
     
-    gc = pygsheets.authorize(service_account_file=creds_path)
+    gc = pygsheets.authorize(service_file=tmp_path)
     sh = gc.open_by_key(spreadsheet_id)
     wks = sh.worksheet_by_title(sheet_name)
 
