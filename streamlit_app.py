@@ -1338,7 +1338,7 @@ elif st.session_state.step == "identity":
     step_identity()
 elif st.session_state.step == "intro_query_based":
     step_intro_query_based()
-elif st.session_state.step == "intro_query_based_for_dummies":
+elif st.session_state.step == "intro_query_for_dummies":
     step_intro_query_based_for_dummies()
 elif st.session_state.step == "query_based":
     step_query_based()
