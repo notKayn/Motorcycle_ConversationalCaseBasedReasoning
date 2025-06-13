@@ -113,7 +113,7 @@ def step_identity():
     # Optional (boleh diaktifin kalau perlu)
     email = st.text_input("📧 Email (opsional)", placeholder="Misalnya: kamu@gmail.com")
 
-    if st.button("➡️ Lanjut ke Aplikasi 1 (Query-Based)"):
+    if st.button("➡️ Lanjut ke Bagian Aplikasi 1"):
         if nama.strip() and usia:
             st.session_state.user_identity = {
                 "nama": nama.strip(),
@@ -197,7 +197,7 @@ def step_query_based():
     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
 
     st.markdown("""
-    Masukkan spesifikasi motor yang kamu inginkan. Sistem akan mencari motor yang **100% cocok** dengan semua preferensimu.
+    Masukkan spesifikasi motor yang kamu inginkan, sistem akan mencari motor yang **100% cocok** dengan semua preferensimu.
 
     🔹 Semakin sedikit atribut yang kamu isi, semakin banyak kemungkinan hasil yang akan ditemukan.  
     🔹 Semakin banyak atribut yang diisi, semakin spesifik model motor yang ditunjukan (kalau ada).  
@@ -205,6 +205,8 @@ def step_query_based():
 
     Sistem ini **tidak mentoleransi perbedaan kecil**, jadi cocok digunakan untuk pencarian yang sangat spesifik.
     """)
+
+    st.markdown("---")
 
     # Label mapping untuk tampilan UI
     label_mapping = {
@@ -265,10 +267,76 @@ def step_query_based():
         st.session_state.query_has_run = True  # ✅ Flag bahwa pencarian udah dijalankan
 
     if st.session_state.get("query_has_run"):
-        if st.button("➡️ Lanjut ke Aplikasi 2 (Case-Based)"):
+        if st.button("➡️ Lanjut ke Bagian Aplikasi 2"):
             st.session_state.step = "input"
             st.rerun()
 
+
+def step_intro_CRSCBR():
+    st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Conversational Case-Based Reasoning")
+
+    st.markdown("""
+    Sistem rekomendasi ini menggunakan pendekatan **Conversational Case-based Reasoning**, 
+    dimana user mendapat rekomendasi berdasarkan pengalaman pengguna lain yang memiliki preferensi serupa sebagai solusi rekomendasi utama.
+    Namun, bila tidak ditemukan rekam pengalaman yang serupa dengan kriteriamu, sistem akan menyesuaikan agar preferensimu dihitung dan dicocokan
+    dengan model motor yang paling mirip. Aplikasi 2 juga menyediakan opsi update atribut/kriteria spesifikasi motor yang kamu cari 
+    bila hasil rekomendasi belum memuaskan.
+
+    - Jika tidak ada rekam jejak pengguna lain dengan preferensi yang sama, sistem akan menghitung kemiripan secara otomatis.
+    - Bila hasil rekomendasi belum memenuhi preferensi kamu, kamu bisa melakukan *refinement* atau *update* untuk memperbaiki 
+    hasil rekomendasi agar lebih sesuai dengan keinginanmu.
+    """)
+
+    st.markdown("---")
+    
+    st.markdown("""
+        Gimana? yang ini mudah dipahami kan?
+    """)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Oke, paham"):
+            st.session_state.step = "input"
+            st.rerun()
+
+    with col2:
+        if st.button("Masih belum, hehe"):
+            st.session_state.step = "intro_CRSCBR_for_dummies"
+            st.rerun()
+
+
+def step_intro_CRSCBR_for_dummies():
+    st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Conversational Case-Based Reasoning")
+
+    st.markdown("""
+    Sekali lagi nih aku jelasin:
+    1. Sistem bakal cariin kamu motor lewat perpustakaan data pengalaman user lain yang sesuai dengan atribut/kriteria dan 
+    urutan prioritas atribut/kriteria yang kamu sebutin.
+    2. Fungsi urutan prioritas disini adalah agar hasil rekomendasi motor lebih sesuai dengan ekspektasi prioritas.
+    - misal kamu pasang atribut kapasitas mesin 250cc dan kategori motor sport fairing:
+    -- Kalo kamu pasang **kapasitas mesin** di **prioritas 1***, ada kemungkinan kamu direkomendasikan motor dengan kapasitas yang dekat dari 250cc
+    terlebih dahulu tapi tidak selalu sport fairing sebagai diurutan yang paling atas
+    -- Kalo kamu pasang **kategori motor** di **prioritas 1**, ada kemungkinan kamu direkomendasikan motor dengan kategori motor sport fairing 
+    terlebih dahulu tapi tidak selalu memiliki kapasitas 250cc.
+    -- Hal tersebut mungkin terjadi karena keterbatasan dataset, mohon dimengerti 🙏
+    3. Kalo target model motor dengan atribut/kriteria yang kamu sebutin tidak pernah ditemukan oleh user lain, sistem otomatis cariin kamu 
+    model motor yang paling mirip dengan cara perhitungan khususnya.
+
+    Ada hal yang harus diketahui, ada satu momen dimana kamu mencari model motor dengan atribut/kriteria spesifikasi namun hasil dari 
+    rekomendasinya meleset sedikit atau cukup jauh. Ada beberapa penyebab:
+    - Kamu salah memasang urutan prioritas atribut/kriteria yang kamu cari, atau
+    - Memang tidak ada model motor yang kamu cari di pasaran. 
+    """)
+
+    st.markdown("---")
+    
+    st.markdown("""
+        Saya harap lebih mudah untuk dimengerti. Sekarang, kita cobain aplikasi 2
+    """)
+
+    if st.button("➡️ Lanjut: Cobain Aplikasi 2"):
+        st.session_state.step = "input"
+        st.rerun()
 
 
 def step_input():
@@ -358,6 +426,14 @@ def step_input():
 
 def step_prioritas():
     st.subheader("🎯 Langkah 2: Tentukan Prioritas Atribut")
+
+    st.markdown("""
+        Disini, kamu masukin atribut/kriteria yang tadi kamu pilih sesuai dengan kebutuhan prioritas kamu.
+        Gampang kok, tinggal masukin aja sesuai kolom yang tersedia.  \n
+        **Paling atas** itu **paling prioritas** yak.
+    """)
+
+    st.markdown("---")
 
     selected_attrs = st.session_state.selected_attrs
     urutan = len(selected_attrs)
@@ -504,7 +580,7 @@ def step_rekomendasi():
                 st.rerun()
 
         elif cocok_lain == "Tidak ada":
-            if st.button("🔧 Refine agar lebih sesuai?"):
+            if st.button("🔧 Mau di-update agar lebih sesuai?"):
                 st.session_state.step = "refinement"
                 st.session_state.refine_base_model = hasil.iloc[0].to_dict()
                 st.session_state.refine_steps = []
@@ -517,96 +593,6 @@ def step_rekomendasi():
                 st.session_state.step = "survey_1"
                 st.rerun()
 
-# def step_refinement():
-#     st.subheader("🔧 Langkah 4: Refinement Interaktif")
-
-#     iterasi = len(st.session_state.get("refine_steps", [])) + 1
-#     st.markdown(f"##### 🔁 Refinement Iterasi ke-{iterasi}")
-
-#     if "refine_base_model" not in st.session_state:
-#         st.error("Tidak ada referensi motor untuk refinement.")
-#         return
-
-#     model_awal = st.session_state.refine_base_model
-#     user_input = st.session_state.user_input.copy()
-
-#     st.markdown("##### 📌 Model Referensi (Top-1 Terakhir):")
-#     tampilkan_model(
-#         model_awal,
-#         judul=f"**{(model_awal.get('Model', 'Tidak Diketahui')).upper()}**"
-#     )
-
-#     st.markdown("##### ✍️ Ubah Preferensi yang Ingin Diperbaiki:")
-
-#     opsi_atribut = [
-#         "Category", "Displacement", "PowerHP", "Brand", "Transmission",
-#         "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
-#         "FuelConsumptionKML", "Price"
-#     ]
-
-#     numeric_ranges = {
-#         "Displacement": (50, 1900, 150),
-#         "PowerHP": (3, 240, 15),
-#         "FuelTank": (2, 30, 5),
-#         "WeightKG": (70, 450, 100),
-#         "FuelConsumptionKML": (10, 100, 40),
-#         "Price": (10_000_000, 1_450_000_000, 25_000_000)
-#     }
-
-#     st.markdown("###### *Checklist atribut yang ingin kamu ubah atau tambahkan")
-
-#     refine_selected_attrs = []
-#     perubahan = {}
-
-#     for attr in opsi_atribut:
-#         val_lama = user_input.get(attr, None)
-#         label = f"{attr} (saat ini: `{val_lama}`)" if val_lama else f"{attr} (tidak diubah)"
-#         aktif = st.checkbox(label, key=f"aktif_refine_{attr}")
-
-#         if aktif:
-#             refine_selected_attrs.append(attr)
-
-#             # Kategorikal
-#             if attr in df.columns and df[attr].dtype == object:
-#                 opsi = sorted(df[attr].dropna().unique())
-#                 index_default = opsi.index(val_lama) if val_lama in opsi else 0
-#                 val_baru = st.selectbox(
-#                     f"Update {attr}:", opsi, index=index_default,
-#                     key=f"refine_val_{attr}"
-#                 )
-
-#             # Numerik
-#             elif attr in numeric_ranges:
-#                 min_val, max_val, default_val = numeric_ranges[attr]
-#                 val_baru = st.number_input(
-#                     f"Update {attr}:", min_value=min_val, max_value=max_val,
-#                     value=int(val_lama) if val_lama else default_val,
-#                     step=1, key=f"refine_val_{attr}"
-#                 )
-
-#             # Fallback
-#             else:
-#                 val_baru = st.text_input(f"Update {attr}:", val_lama or "", key=f"refine_val_{attr}")
-
-#             # Catat perubahan
-#             if val_baru != val_lama:
-#                 perubahan[attr] = (val_lama, val_baru)
-#                 user_input[attr] = val_baru
-
-#     if st.button("✅ Simpan & Hitung Ulang"):
-#         if perubahan:
-#             st.session_state.refine_steps.append(perubahan)
-#             st.session_state.user_input = user_input
-#             st.session_state.active_attrs_after_refine = sorted(set(user_input.keys()))
-#             st.session_state.step = "refine_prioritas"
-#             st.rerun()
-#         else:
-#             st.warning("⚠️ Tidak ada perubahan yang dilakukan.")
-
-#     if st.button("❌ Cancel dan keluar dari app"):
-#         st.success("Sesi refinement selesai. Menyimpan hasil final.")
-#         st.session_state.step = "survey_1"
-#         st.rerun()
 
 def step_refinement():
     st.subheader("🔧 Langkah 4: Refinement Interaktif")
