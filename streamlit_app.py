@@ -562,6 +562,7 @@ def step_rekomendasi():
         2. Klik/sentuh tombol "Mau di-update agar lebih sesuai?"
         """)
 
+        st.markdown("---")
         
         opsi_model = ["Tidak ada"] + list(hasil.iloc[1:6]["Model"]) + ["Saya ingin keluar saja"]
         cocok_lain = st.radio("🎯 Adakah model lain yang mendekati preferensimu?", opsi_model, key="radio_cocok_lain")
