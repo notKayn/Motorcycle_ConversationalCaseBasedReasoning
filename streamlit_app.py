@@ -144,9 +144,16 @@ def step_intro_query_based():
     tidak bisa memberikan rekomendasi data model motor yang kamu cari.
 
     Intinya, aplikasi ini memberikan model motor apa adanya sesuai dengan yang kamu sebut di awal.
+    """)
 
+    st.markdown("""
+    ---
+    """)
+
+    st.markdown("""
     Apakah kamu sudah paham konsep cara kerja dari aplikasi 1?
     """)
+    
 
     col1, col2 = st.columns(2)
     with col1:
@@ -173,9 +180,13 @@ def step_intro_query_for_dummies():
     2. Kalau sistem tidak bisa menemukan motor sesuai dengan yang kamu sebut, kemungkinannya ada 2:
         - Tidak ada model motor yang sesuai dengan spesifikasi yang kamu sebutkan, atau
         - Spesifikasi motor asli motor tidak sesuai dengan yang kamu sebut, misal kamu sebut 150cc tapi ternyata spesifikasi aslinya 149,7cc atau 151,2cc.
+    """)
+    
+    st.markdown("""
+    ---
+    """)
 
-
-
+    st.markdown("""
     Saya anggap harusnya sudah lebih mudah untuk dimengerti, kita lanjut cobain aplikasinya yuk.
     """)
 
