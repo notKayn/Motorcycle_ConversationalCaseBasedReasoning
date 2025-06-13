@@ -1326,9 +1326,9 @@ elif st.session_state.step == "intro_query_for_dummies":
     step_intro_query_for_dummies()
 elif st.session_state.step == "query_based":
     step_query_based()
-elif st.session_state.step == "intro_CRSCBR"
+elif st.session_state.step == "intro_CRSCBR":
     step_intro_CRSCBR()
-elif st.session_state.step == "intro_CRSCBR_for_dummies"
+elif st.session_state.step == "intro_CRSCBR_for_dummies":
     step_intro_CRSCBR_for_dummies()
 elif st.session_state.step == "input":
     step_input()
