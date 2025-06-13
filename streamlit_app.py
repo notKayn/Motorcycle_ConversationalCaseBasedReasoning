@@ -72,18 +72,36 @@ if "prioritas_user" not in st.session_state:
 def step_intro():
     st.subheader("🧪 Uji Coba Aplikasi Rekomendasi Motor")
 
+    # st.markdown("""
+    # Halo! 👋 Terima kasih sudah bersedia ikut uji coba kecil ini.
+
+    # Di halaman ini, kamu akan mencoba **dua aplikasi rekomendasi motor** dengan pendekatan berbeda:
+    # - 📋 **Aplikasi 1**: Query-based — Mencari model motor **sama persis** dengan apa yang kamu 
+    #             sebutkan pada data motor yang tersedia. Semakin banyak atribut yang kamu isi, semakin spesifik model motor yang akan ditunjukkan, 
+    #             namun memungkinkan model tidak ditemukan bila 100% harus sama persis dengan yang kamu cari karena bisa jadi tidak ada model yang cocok.
+
+    # - 🔍 **Aplikasi 2**: Conversational Case-based Reasoning — menggunakan pendekatan pencocokan dari pengalaman pengguna sebelumnya. 
+    #             jika tidak ditemukan history pencarian dari user sebelumnya, sistem akan menghitung kemiripan secara otomatis.
+    
+    # Kamu akan mencoba kedua aplikasi ini secara bergantian, dan memberikan penilaian untuk masing-masing aplikasi berbentuk feedback survey.
+
+    # Klik tombol di bawah ini untuk memulai.
+    # """)
+
     st.markdown("""
     Halo! 👋 Terima kasih sudah bersedia ikut uji coba kecil ini.
 
-    Di halaman ini, kamu akan mencoba **dua aplikasi rekomendasi motor** dengan pendekatan berbeda:
-    - 📋 **Aplikasi 1**: Query-based — Mencari model motor **sama persis** dengan apa yang kamu 
-                sebutkan pada data motor yang tersedia. Semakin banyak atribut yang kamu isi, semakin spesifik model motor yang akan ditunjukkan, 
-                namun memungkinkan model tidak ditemukan bila 100% harus sama persis dengan yang kamu cari karena bisa jadi tidak ada model yang cocok.
+    Ini adalah sebuah aplikasi berbentuk web sederhana yang akan menghasilkan rekomendasi motor sesuai dengan kriteria yang kamu inginkan.
+    Disini, dilakukan 2 tes aplikasi: 
 
-    - 🔍 **Aplikasi 2**: Conversational Case-based Reasoning — menggunakan pendekatan pencocokan dari pengalaman pengguna sebelumnya. 
-                jika tidak ditemukan history pencarian dari user sebelumnya, sistem akan menghitung kemiripan secara otomatis.
+    - 📋 **Aplikasi 1**: Query-based — Aplikasi ini mecari model motor sangat spesifik dengan atribut/kriteria yang kamu sebut. Semakin spesifik yang kamu sebut, 
+    maka semakin sulit ketersediaan model yang kamu cari.
+
+    - 🔍 **Aplikasi 2**: Conversational Case-based Reasoning — Mirip dengan aplikasi 1, tetapi aplikasi ini menggunakan perhitungan khusus untuk
+    atribut yang kamu sebut. Aplikasi ini akan memberikan model motor yang paling mirip dengan apa yang kamu sebut di awal, walau diisi dengan atribut yang
+    memiliki kemungkinan tidak ditemukan model yang paling cocok sekalipun.
     
-    Kamu akan mencoba kedua aplikasi ini secara bergantian, dan memberikan penilaian untuk masing-masing aplikasi berbentuk feedback survey.
+    Kamu akan mencoba kedua aplikasi ini secara bergantian, dan memberikan penilaian untuk masing-masing aplikasi berbentuk survei.
 
     Klik tombol di bawah ini untuk memulai.
     """)
@@ -121,81 +139,61 @@ def step_identity():
                 "email": email if email else None,
                 "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
-            st.session_state.step = "query_based"
+            st.session_state.step = "intro_query_based"
             st.rerun()
         else:
             st.warning("⚠️ Nama dan usia wajib diisi terlebih dahulu.")
 
-# def step_query_based():
-#     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
+def step_intro_query_based():
+    st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
 
-#     st.markdown("""
-#     Masukkan spesifikasi motor yang kamu inginkan. Sistem akan mencari motor yang **100% cocok** dengan semua preferensimu.
-                
-#                 Semakin sedikit atribut yang kamu isi,
-#                 semakin banyak kemungkinan hasil yang akan ditemukan.
-                
-#         Semakin banyak atribut yang diisi, 
-#                 semakin spesifik model motor yang ditunjukan (kalau ada). 
-#     Jika tidak ada motor yang cocok, sistem akan memberi tahu bahwa tidak ada motor yang 100% sesuai dengan preferensimu.
-#     Karena query-based mencari data motor yang **sama persis** dengan apa yang kamu sebutkan, ada kemungkinan tidak ada model yang cocok ditemukan.
+    st.markdown("""
+    Seperti yang yang dijelaskan di awal, aplikasi ini hanya memberikan rekomendasi motor sangat spesifik dengan apa yang kamu sebutkan. 
+    Cara kerja dari aplikasi 1, simplenya gini:
+    - kamu pasang atribut A, sistem akan kasih kamu semua motor yang memiliki atribut A bersama dengan atribut motor lainnya
+    - kamu pasang atribut A dan B, sistem akan kasih kamu semua motor yang memilki atribut A dan B bersama dengan atribut motor lainnya juga.
+    - kamu pasang atribut A, B, C, D, dan E, sistem akan tetap mencari motor yang memiliki atribut dan menunjukkannya ***bila ditemukan***.
     
-#     Hal ini mungkin terjadi dan sebagai contohnya, bila kamu mencari motor dengan kapasitas mesin 150cc, di atas kertas jarang sekali ada motor yang memiliki kapasitas mesin 150cc rata, melainkan 149cc atau 151cc.
-                
+    Jadi, kalau kamu menyebutkan:
+    - atribut/kriteria motor yang terlalu umum atau sedikit yang digunakan, kemungkinan besar sistem akan memberikan rekomendasi yang terlalu umum juga.
+    - atribut/kriteria motor yang terlalu spesifik atau tidak sesuai dengan spesifikasi umum model motor di atas kertas, ada kemungkinan sistem
+    tidak bisa memberikan rekomendasi data model motor yang kamu cari.
 
-#     """)
+    Intinya, aplikasi ini memberikan model motor apa adanya sesuai dengan yang kamu sebut di awal.
 
-#     opsi_atribut = [
-#         "Category", "Displacement", "PowerHP", "Brand", "Transmission",
-#         "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
-#         "FuelConsumptionKML", "Price"
-#     ]
+    Apakah kamu sudah paham konsep cara kerja dari aplikasi 1?
+    """)
 
-#     preferensi = {}
-#     st.markdown("---")
-#     st.markdown("✅ Checklist atribut yang ingin kamu isi:")
-#     selected_attrs = []
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Saya sudah paham"):
+            st.session_state.step = "query_based"
+            st.rerun()
 
-#     for attr in opsi_atribut:
-#         if st.checkbox(f"Gunakan {attr}", key=f"query_use_{attr}"):
-#             selected_attrs.append(attr)
-#             if attr in ["Displacement", "PowerHP", "FuelTank", "WeightKG", "FuelConsumptionKML"]:
-#                 preferensi[attr] = st.number_input(f"{attr}:", step=1, key=f"query_val_{attr}")
-#             elif attr == "Price":
-#                 preferensi[attr] = st.number_input(f"{attr} (Rp):", min_value=0, step=1_000_000, key=f"query_val_{attr}")
-#             elif attr in df.columns:
-#                 options = sorted(df[attr].dropna().unique())
-#                 preferensi[attr] = st.selectbox(f"{attr}:", options, key=f"query_val_{attr}")
-#             else:
-#                 preferensi[attr] = st.text_input(f"{attr}:", key=f"query_val_{attr}")
+    with col2:
+        if st.button("Belum paham nih...")
+            st.session_state.step = "intro_query_for_dummies"
 
-#     st.markdown("---")
 
-#     if st.button("🔎 Cari Motor yang Cocok"):
-#         hasil = df.copy()
-#         for attr, val in preferensi.items():
-#             # Kalau numeric, cocokkan dengan toleransi kecil karena bisa float
-#             if pd.api.types.is_numeric_dtype(df[attr]):
-#                 hasil = hasil[np.isclose(hasil[attr], float(val), atol=1e-1)]
-#             else:
-#                 hasil = hasil[hasil[attr] == val]
+def step_intro_query_for_dummies():
+    st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
 
-#         if not hasil.empty:
-#             st.success(f"🎉 Ditemukan {len(hasil)} motor yang cocok dengan preferensimu!")
-#             for i, row in hasil.iterrows():
-#                 tampilkan_model(row, judul=f"🏍️ {row['Model']}")
-#         else:
-#             st.warning("😕 Tidak ada motor yang 100% cocok dengan preferensimu.")
+    st.markdown("""
+    Jadi gini loh...
+    1. Kamu masukan atribut spesifikasi motor yang kamu mau.
+    2. Sistem akan cariin motor sesuai atribut spesifikasi motor sesuai yang kamu sebut.
 
-#         # Simpan hasil + input ke session
-#         st.session_state.query_result = hasil.to_dict(orient="records")
-#         st.session_state.query_input = preferensi
-#         st.session_state.query_has_run = True  # ✅ Flag bahwa pencarian udah dijalankan
+    Inti dari aplikasi 1 sebenarnya hanya sesimple itu, tapi ada hal yang harus kamu tau:
+    1. Sistem ini sangat ketat dengan apa yang kamu sebut. Semakin umum maka akan semakin umum atau banyak motor yang muncul, pula sebaliknya.
+    2. Kalau sistem tidak bisa menemukan motor sesuai dengan yang kamu sebut, kemungkinannya ada 2:
+        - Tidak ada model motor yang sesuai dengan spesifikasi yang kamu sebutkan, atau
+        - Spesifikasi motor asli motor tidak sesuai dengan yang kamu sebut, misal kamu sebut 150cc tapi ternyata spesifikasi aslinya 149,7cc atau 151,2cc.
 
-#     if st.session_state.get("query_has_run"):
-#         if st.button("➡️ Lanjut ke Aplikasi 2 (Case-Based)"):
-#             st.session_state.step = "input"
-#             st.rerun()
+    Saya anggap harusnya sudah lebih mudah untuk dimengerti, kita lanjut cobain aplikasinya yuk.
+    """)
+
+    if st.button("➡️ Lanjut: cobain aplikasi 1"):
+        st.session_state.step = "query_based"
 
 def step_query_based():
     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
@@ -1337,6 +1335,10 @@ if st.session_state.step == "intro":
     step_intro()
 elif st.session_state.step == "identity":
     step_identity()
+elif st.session_state.step == "intro_query_based":
+    step_intro_query_based()
+elif st.session_state.step == "intro_query_based_for_dummies":
+    step_intro_query_based_for_dummies()
 elif st.session_state.step == "query_based":
     step_query_based()
 elif st.session_state.step == "input":
