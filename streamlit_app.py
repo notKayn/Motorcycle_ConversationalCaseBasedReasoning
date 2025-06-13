@@ -315,11 +315,11 @@ def step_intro_CRSCBR_for_dummies():
     urutan prioritas atribut/kriteria yang kamu sebutin.
     2. Fungsi urutan prioritas disini adalah agar hasil rekomendasi motor lebih sesuai dengan ekspektasi prioritas.
     - misal kamu pasang atribut kapasitas mesin 250cc dan kategori motor sport fairing:
-    -- Kalo kamu pasang **kapasitas mesin** di **prioritas 1***, ada kemungkinan kamu direkomendasikan motor dengan kapasitas yang dekat dari 250cc
+        - Kalo kamu pasang **kapasitas mesin** di **prioritas 1**, ada kemungkinan kamu direkomendasikan motor dengan kapasitas yang dekat dari 250cc
     terlebih dahulu tapi tidak selalu sport fairing sebagai diurutan yang paling atas
-    -- Kalo kamu pasang **kategori motor** di **prioritas 1**, ada kemungkinan kamu direkomendasikan motor dengan kategori motor sport fairing 
+        - Kalo kamu pasang **kategori motor** di **prioritas 1**, ada kemungkinan kamu direkomendasikan motor dengan kategori motor sport fairing 
     terlebih dahulu tapi tidak selalu memiliki kapasitas 250cc.
-    -- Hal tersebut mungkin terjadi karena keterbatasan dataset, mohon dimengerti 🙏
+        - Hal tersebut mungkin terjadi karena keterbatasan dataset, mohon dimengerti 🙏
     3. Kalo target model motor dengan atribut/kriteria yang kamu sebutin tidak pernah ditemukan oleh user lain, sistem otomatis cariin kamu 
     model motor yang paling mirip dengan cara perhitungan khususnya.
 
@@ -471,7 +471,6 @@ def step_rekomendasi():
     st.json(st.session_state.prioritas_user)
 
      # ⏪ Cek case historis serupa
-    # populer_dari_case = hitung_model_terpopuler_dari_case("case_base.json", st.session_state.user_input)
     populer_dari_case = hitung_model_terpopuler_dari_case_gsheet(
         st.session_state.user_input,
         spreadsheet_id='193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
