@@ -269,7 +269,7 @@ def step_query_based():
 
     if st.session_state.get("query_has_run"):
         if st.button("➡️ Lanjut ke Bagian Aplikasi 2"):
-            st.session_state.step = "input"
+            st.session_state.step = "intro_CRSCBR"
             st.rerun()
 
 
@@ -1326,6 +1326,10 @@ elif st.session_state.step == "intro_query_for_dummies":
     step_intro_query_for_dummies()
 elif st.session_state.step == "query_based":
     step_query_based()
+elif st.session_state.step == "intro_CRSCBR"
+    step_intro_CRSCBR()
+elif st.session_state.step == "intro_CRSCBR_for_dummies"
+    step_intro_CRSCBR_for_dummies()
 elif st.session_state.step == "input":
     step_input()
 elif st.session_state.step == "prioritas":
