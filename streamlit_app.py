@@ -173,6 +173,7 @@ def step_intro_query_based():
     with col2:
         if st.button("Belum paham nih..."):
             st.session_state.step = "intro_query_for_dummies"
+            st.rerun()
 
 
 def step_intro_query_for_dummies():
