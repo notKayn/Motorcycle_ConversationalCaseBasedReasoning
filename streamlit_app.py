@@ -72,22 +72,6 @@ if "prioritas_user" not in st.session_state:
 def step_intro():
     st.subheader("🧪 Uji Coba Aplikasi Rekomendasi Motor")
 
-    # st.markdown("""
-    # Halo! 👋 Terima kasih sudah bersedia ikut uji coba kecil ini.
-
-    # Di halaman ini, kamu akan mencoba **dua aplikasi rekomendasi motor** dengan pendekatan berbeda:
-    # - 📋 **Aplikasi 1**: Query-based — Mencari model motor **sama persis** dengan apa yang kamu 
-    #             sebutkan pada data motor yang tersedia. Semakin banyak atribut yang kamu isi, semakin spesifik model motor yang akan ditunjukkan, 
-    #             namun memungkinkan model tidak ditemukan bila 100% harus sama persis dengan yang kamu cari karena bisa jadi tidak ada model yang cocok.
-
-    # - 🔍 **Aplikasi 2**: Conversational Case-based Reasoning — menggunakan pendekatan pencocokan dari pengalaman pengguna sebelumnya. 
-    #             jika tidak ditemukan history pencarian dari user sebelumnya, sistem akan menghitung kemiripan secara otomatis.
-    
-    # Kamu akan mencoba kedua aplikasi ini secara bergantian, dan memberikan penilaian untuk masing-masing aplikasi berbentuk feedback survey.
-
-    # Klik tombol di bawah ini untuk memulai.
-    # """)
-
     st.markdown("""
     Halo! 👋 Terima kasih sudah bersedia ikut uji coba kecil ini.
 
@@ -189,6 +173,8 @@ def step_intro_query_for_dummies():
     2. Kalau sistem tidak bisa menemukan motor sesuai dengan yang kamu sebut, kemungkinannya ada 2:
         - Tidak ada model motor yang sesuai dengan spesifikasi yang kamu sebutkan, atau
         - Spesifikasi motor asli motor tidak sesuai dengan yang kamu sebut, misal kamu sebut 150cc tapi ternyata spesifikasi aslinya 149,7cc atau 151,2cc.
+
+
 
     Saya anggap harusnya sudah lebih mudah untuk dimengerti, kita lanjut cobain aplikasinya yuk.
     """)
