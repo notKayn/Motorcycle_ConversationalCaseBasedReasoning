@@ -326,7 +326,7 @@ def step_intro_CRSCBR_for_dummies():
     Ada hal yang harus diketahui, ada satu momen dimana kamu mencari model motor dengan atribut/kriteria spesifikasi namun hasil dari 
     rekomendasinya meleset sedikit atau cukup jauh. Ada beberapa penyebab:
     - Kamu salah memasang urutan prioritas atribut/kriteria yang kamu cari, atau
-    - Memang tidak ada model motor yang kamu cari di pasaran. 
+    - Model motor yang kamu cari memang tidak tersedia di pasaran. 
     """)
 
     st.markdown("---")
@@ -344,12 +344,7 @@ def step_input():
     st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Case-Based")
 
     st.markdown("""
-    Sistem rekomendasi ini menggunakan pendekatan **Conversational Case-based Reasoning**, 
-    dimana user mendapat rekomendasi berdasarkan pengalaman pengguna lain yang memiliki preferensi serupa.
-
-    Jika tidak ada rekam jejak pengguna lain dengan preferensi yang sama, 
-    sistem akan menghitung kemiripan secara otomatis. Bila hasil rekomendasi belum memenuhi preferensi kamu, 
-    kamu bisa melakukan **refinement** untuk memperbaiki hasil rekomendasi agar lebih sesuai dengan keinginanmu.
+    Sekarang, coba kamu masukan atribut/kriteria spesifikasi motor yang kamu inginkan di kolom yang tersedia di bawah.
     """)
 
     st.markdown("---")
@@ -364,16 +359,16 @@ def step_input():
     # Label dalam Bahasa Indonesia
     label_mapping = {
         "Category": "Kategori",
-        "Displacement": "Kapasitas Mesin (cc)",
-        "PowerHP": "Tenaga Maksimum (HP)",
+        "Displacement": "Kapasitas Mesin (dalam satuan cc)",
+        "PowerHP": "Tenaga Maksimum (*dalam satuan Horsepower*)",
         "Brand": "Merek",
         "Transmission": "Transmisi",
         "ClutchType": "Jenis Kopling",
         "EngineConfig": "Konfigurasi Mesin",
-        "FuelTank": "Kapasitas Tangki (L)",
-        "WeightKG": "Berat Motor (kg)",
-        "FuelConsumptionKML": "Konsumsi BBM (km/L)",
-        "Price": "Harga (Rp)"
+        "FuelTank": "Kapasitas Tangki (*dalam satuan Liter*)",
+        "WeightKG": "Berat Motor (dalam satuan Kilogram)",
+        "FuelConsumptionKML": "Konsumsi BBM (*dalam satuan Kilometer/Liter*)",
+        "Price": "Harga (*dalam satuan Rupiah*)"
     }
 
     numeric_ranges = {
@@ -463,6 +458,12 @@ def step_prioritas():
 
 def step_rekomendasi():
     st.subheader("📈 Langkah 3: Hasil Rekomendasi")
+
+    st.markdown("""
+        Disini, kamu akan mendapatkan hasil rekomendasi model motor yang paling mendekati dengan atribut/kriteria yang kamu sebutkan di awal.
+        Untuk model motornya, kamu bisa klik/sentuh nama motornya untuk mengetahui spesfikasi motor tersebut.
+        Scroll sampai bawah ya, nanti ada umpan balik sederhana yang kamu harus isi.
+    """)
 
     st.subheader("📌 Preferensi kamu:")
     st.json(st.session_state.user_input)
@@ -555,6 +556,13 @@ def step_rekomendasi():
             st.session_state.puas_awal = "tidak"
 
     if st.session_state.get("puas_awal") == "tidak":
+        st.markdown("""
+        kamu masih bisa perbaiki hasilnya lho kalo semisal belum memenuhi ekspektasimu 👀, tinggal pilih:
+        1. Pilih opsi "Tidak ada"
+        2. Klik/sentuh tombol "Mau di-update agar lebih sesuai?"
+        """)
+
+        
         opsi_model = ["Tidak ada"] + list(hasil.iloc[1:6]["Model"]) + ["Saya ingin keluar saja"]
         cocok_lain = st.radio("🎯 Adakah model lain yang mendekati preferensimu?", opsi_model, key="radio_cocok_lain")
 
