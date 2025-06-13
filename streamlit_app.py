@@ -192,6 +192,7 @@ def step_intro_query_for_dummies():
 
     if st.button("➡️ Lanjut: cobain aplikasi 1"):
         st.session_state.step = "query_based"
+        st.rerun()
 
 def step_query_based():
     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
