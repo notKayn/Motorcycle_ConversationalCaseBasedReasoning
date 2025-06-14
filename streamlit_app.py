@@ -1263,17 +1263,11 @@ def step_finish_evaluation():
         st.session_state.user_has_saved = True
 
     # Tombol reset setelah simpan
-    if st.session_state.get("user_has_saved") == True:
-        if st.button("🔄 Balik lagi ke page paling awal?"):
-            # Simpan step target sebelum menghapus session
-            st.session_state["__next_step"] = "intro"
-    
-            # Hapus semua session kecuali __next_step
-            keys_to_keep = ["__next_step"]
+    if st.session_state.get("user_has_saved", False):
+        if st.button("🔄 Balik lagi ke halaman awal?"):
             for key in list(st.session_state.keys()):
-                if key not in keys_to_keep:
-                    del st.session_state[key]
-    
+                del st.session_state[key]
+            st.session_state.step = "intro"
             st.rerun()
 
 
