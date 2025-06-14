@@ -452,7 +452,7 @@ def step_input():
                     label_options = options  # default, no label mapping
             
                 # Tampilkan label tapi simpan value asli
-                pilihan_label = st.selectbox("", label_options, key=f"val_{attr}")
+                pilihan_label = st.selectbox(f"Silakan isi kolom atribut {label} di bawah ini.", label_options, key=f"val_{attr}")
                 index = label_options.index(pilihan_label)
                 val = options[index]
 
