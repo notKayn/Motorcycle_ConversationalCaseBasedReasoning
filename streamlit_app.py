@@ -1025,34 +1025,72 @@ def step_refinement_result():
                 st.session_state.step = "survey_1"
                 st.rerun()
 
+# def step_survey_1():
+#     st.title("📝 Survei Pengalaman - Aplikasi 2 (Case-Based Recommender)")
+
+#     st.markdown("""
+#     Terima kasih telah mencoba aplikasi kedua. Kami ingin tahu pendapat kamu terhadap sistem rekomendasi ini.
+#     """)
+
+#     rating_akurasi = st.radio("🎯 Menurut kamu, seberapa akurat sistem ini dalam merekomendasikan motor yang sesuai?", [
+#         "Sangat akurat", "Cukup akurat", "Kurang akurat", "Tidak akurat"
+#     ], key="cb_akurasi")
+
+#     rating_puasan = st.radio("😊 Apakah kamu puas dengan hasil rekomendasi yang diberikan oleh sistem ini?", [
+#         "Sangat puas", "Puas", "Kurang puas", "Tidak puas"
+#     ], key="cb_puasan")
+
+#     rating_pengalaman = st.radio("🧭 Bagaimana pengalaman kamu saat menggunakan aplikasi ini?", [
+#         "Sangat nyaman", "Cukup nyaman", "Sedikit membingungkan", "Tidak nyaman"
+#     ], key="cb_pengalaman")
+
+#     saran = st.text_area("💬 Ada saran, kritik, atau komentar lainnya?", placeholder="Tulis pendapat kamu di sini...")
+
+#     if st.button("➡️ Lanjut ke Survei Perbandingan"):
+#         st.session_state.survey_1_feedback = {
+#             "akurasi": rating_akurasi,
+#             "puasan": rating_puasan,
+#             "pengalaman": rating_pengalaman,
+#             "saran": saran
+#         }
+#         st.session_state.step = "survey_2"
+#         st.rerun()
+
 def step_survey_1():
-    st.title("📝 Survei Pengalaman - Aplikasi 2 (Case-Based Recommender)")
+    st.subheader("📝 Survei Pengalaman dengan Aplikasi 2 (Case-Based)")
+    st.markdown("Berikan penilaianmu terhadap sistem rekomendasi Case-Based berdasarkan pengalaman kamu.")
+    st.markdown("Skala penilaian:")
+    st.markdown("- 1 = Sangat Tidak Setuju")
+    st.markdown("- 5 = Sangat Setuju")
 
-    st.markdown("""
-    Terima kasih telah mencoba aplikasi kedua. Kami ingin tahu pendapat kamu terhadap sistem rekomendasi ini.
-    """)
+    skala = [1, 2, 3, 4, 5]
+    survey_1_feedback = {}
 
-    rating_akurasi = st.radio("🎯 Menurut kamu, seberapa akurat sistem ini dalam merekomendasikan motor yang sesuai?", [
-        "Sangat akurat", "Cukup akurat", "Kurang akurat", "Tidak akurat"
-    ], key="cb_akurasi")
+    st.markdown("### 🎯 Kualitas Rekomendasi (PRQ)")
+    survey_1_feedback["prq_like_product"] = st.selectbox("Saya menyukai model motor yang saya pilih", skala)
+    survey_1_feedback["prq_dislike_interaction"] = st.selectbox("Saya tidak suka interaksi dengan sistem ini", skala)
 
-    rating_puasan = st.radio("😊 Apakah kamu puas dengan hasil rekomendasi yang diberikan oleh sistem ini?", [
-        "Sangat puas", "Puas", "Kurang puas", "Tidak puas"
-    ], key="cb_puasan")
+    st.markdown("### ⚡ Efisiensi (PE)")
+    survey_1_feedback["pe_fast_find"] = st.selectbox("Saya bisa menemukan motor yang saya suka dengan cepat", skala)
 
-    rating_pengalaman = st.radio("🧭 Bagaimana pengalaman kamu saat menggunakan aplikasi ini?", [
-        "Sangat nyaman", "Cukup nyaman", "Sedikit membingungkan", "Tidak nyaman"
-    ], key="cb_pengalaman")
+    st.markdown("### 🤝 Kepercayaan (TR)")
+    survey_1_feedback["tr_would_buy"] = st.selectbox("Saya akan membeli motor ini suatu hari nanti", skala)
+    survey_1_feedback["tr_use_again"] = st.selectbox("Saya ingin menggunakan sistem ini lagi di masa depan", skala)
 
-    saran = st.text_area("💬 Ada saran, kritik, atau komentar lainnya?", placeholder="Tulis pendapat kamu di sini...")
+    st.markdown("### 📖 Informasi (INF)")
+    survey_1_feedback["inf_easy_info"] = st.selectbox("Saya mudah mendapatkan informasi tentang motor", skala)
 
+    st.markdown("### 🧭 Kemudahan Penggunaan (ETU)")
+    survey_1_feedback["etu_difficult_find"] = st.selectbox("Saya merasa sulit menemukan motor yang sesuai keinginan", skala)
+    survey_1_feedback["etu_no_difficulty"] = st.selectbox("Saya tidak mengalami kesulitan saat menggunakan sistem", skala)
+
+    st.markdown("### 🧠 Kemudahan Memahami (EOU)")
+    survey_1_feedback["eou_easy_options"] = st.selectbox("Pertanyaan dan pilihan mudah dipahami", skala)
+    survey_1_feedback["eou_understood_all"] = st.selectbox("Saya paham semua yang ditampilkan dalam sistem", skala)
+
+    st.markdown("---")More actions
     if st.button("➡️ Lanjut ke Survei Perbandingan"):
-        st.session_state.survey_1_feedback = {
-            "akurasi": rating_akurasi,
-            "puasan": rating_puasan,
-            "pengalaman": rating_pengalaman,
-            "saran": saran
-        }
+        st.session_state.survey_1_feedback = survey_1_feedback
         st.session_state.step = "survey_2"
         st.rerun()
 
