@@ -1025,140 +1025,56 @@ def step_refinement_result():
                 st.session_state.step = "survey_1"
                 st.rerun()
 
-# def step_survey_1():
-#     st.title("📝 Survei Pengalaman - Aplikasi 2 (Case-Based Recommender)")
-
-#     st.markdown("""
-#     Terima kasih telah mencoba aplikasi kedua. Kami ingin tahu pendapat kamu terhadap sistem rekomendasi ini.
-#     """)
-
-#     rating_akurasi = st.radio("🎯 Menurut kamu, seberapa akurat sistem ini dalam merekomendasikan motor yang sesuai?", [
-#         "Sangat akurat", "Cukup akurat", "Kurang akurat", "Tidak akurat"
-#     ], key="cb_akurasi")
-
-#     rating_puasan = st.radio("😊 Apakah kamu puas dengan hasil rekomendasi yang diberikan oleh sistem ini?", [
-#         "Sangat puas", "Puas", "Kurang puas", "Tidak puas"
-#     ], key="cb_puasan")
-
-#     rating_pengalaman = st.radio("🧭 Bagaimana pengalaman kamu saat menggunakan aplikasi ini?", [
-#         "Sangat nyaman", "Cukup nyaman", "Sedikit membingungkan", "Tidak nyaman"
-#     ], key="cb_pengalaman")
-
-#     saran = st.text_area("💬 Ada saran, kritik, atau komentar lainnya?", placeholder="Tulis pendapat kamu di sini...")
-
-#     if st.button("➡️ Lanjut ke Survei Perbandingan"):
-#         st.session_state.survey_1_feedback = {
-#             "akurasi": rating_akurasi,
-#             "puasan": rating_puasan,
-#             "pengalaman": rating_pengalaman,
-#             "saran": saran
-#         }
-#         st.session_state.step = "survey_2"
-#         st.rerun()
-
 def step_survey_1():
-    st.subheader("📝 Survei Pengalaman dengan Aplikasi 2 (Case-Based)")
-    st.markdown("Berikan penilaianmu terhadap sistem rekomendasi Case-Based berdasarkan pengalaman kamu.")
-    st.markdown("Skala penilaian:")
-    st.markdown("- 1 = Sangat Tidak Setuju")
-    st.markdown("- 5 = Sangat Setuju")
+    st.subheader("📋 Survei Pengalaman - Aplikasi Case-Based")
 
-    skala = [1, 2, 3, 4, 5]
-    survey_1_feedback = {}
+    st.markdown("Silakan beri tanda centang (✔️) pada pernyataan yang kamu **setujui**, dan biarkan kosong jika **tidak setuju**.")
 
-    st.markdown("### 🎯 Kualitas Rekomendasi (PRQ)")
-    survey_1_feedback["prq_like_product"] = st.selectbox("Saya menyukai model motor yang saya pilih", skala)
-    survey_1_feedback["prq_dislike_interaction"] = st.selectbox("Saya tidak suka interaksi dengan sistem ini", skala)
+    statements = {
+        "prq_1": "Saya sangat menyukai motor yang saya pilih.",
+        "prq_2": "Saya tidak menyukai cara interaksi sistem ini.",  # ✘ negatif
+        "pe_1": "Saya bisa menemukan motor yang saya sukai dengan cepat.",
+        "tr_1": "Saya benar-benar akan mempertimbangkan membeli motor ini suatu saat nanti.",
+        "tr_2": "Saya tertarik untuk menggunakan sistem ini lagi bila ingin mencari motor.",
+        "inf_1": "Saya dapat dengan mudah menemukan informasi tentang motor.",
+        "etu_1": "Secara keseluruhan, saya kesulitan menemukan motor yang sesuai keinginan.",  # ✘ negatif
+        "etu_2": "Saya tidak mengalami kesulitan dalam menggunakan sistem ini.",
+        "eou_1": "Pertanyaan dan pilihan yang diberikan mudah dipahami.",
+        "eou_2": "Saya sangat memahami semua pertanyaan yang diberikan kepada saya."
+    }
 
-    st.markdown("### ⚡ Efisiensi (PE)")
-    survey_1_feedback["pe_fast_find"] = st.selectbox("Saya bisa menemukan motor yang saya suka dengan cepat", skala)
+    survey_answers = {}
 
-    st.markdown("### 🤝 Kepercayaan (TR)")
-    survey_1_feedback["tr_would_buy"] = st.selectbox("Saya akan membeli motor ini suatu hari nanti", skala)
-    survey_1_feedback["tr_use_again"] = st.selectbox("Saya ingin menggunakan sistem ini lagi di masa depan", skala)
+    for key, text in statements.items():
+        survey_answers[key] = st.checkbox(f"✔️ {text}", key=f"survey1_{key}")
 
-    st.markdown("### 📖 Informasi (INF)")
-    survey_1_feedback["inf_easy_info"] = st.selectbox("Saya mudah mendapatkan informasi tentang motor", skala)
+    saran = st.text_area("📝 Saran / komentar tambahan (opsional)", key="survey1_saran")
+    survey_answers["saran"] = saran
 
-    st.markdown("### 🧭 Kemudahan Penggunaan (ETU)")
-    survey_1_feedback["etu_difficult_find"] = st.selectbox("Saya merasa sulit menemukan motor yang sesuai keinginan", skala)
-    survey_1_feedback["etu_no_difficulty"] = st.selectbox("Saya tidak mengalami kesulitan saat menggunakan sistem", skala)
-
-    st.markdown("### 🧠 Kemudahan Memahami (EOU)")
-    survey_1_feedback["eou_easy_options"] = st.selectbox("Pertanyaan dan pilihan mudah dipahami", skala)
-    survey_1_feedback["eou_understood_all"] = st.selectbox("Saya paham semua yang ditampilkan dalam sistem", skala)
-
-    st.markdown("---")
-    if st.button("➡️ Lanjut ke Survei Perbandingan"):
-        st.session_state.survey_1_feedback = survey_1_feedback
+    if st.button("➡️ Lanjut ke Survei 2"):
+        st.session_state.survey_1_feedback = survey_answers
         st.session_state.step = "survey_2"
         st.rerun()
 
-# def step_survey_2():
-#     st.title("⚖️ Survei Perbandingan Dua Sistem")
-
-#     st.markdown("""
-#     Sekarang setelah kamu mencoba **dua jenis sistem rekomendasi**, kami ingin tahu pendapat akhirmu dalam membandingkan keduanya.
-#     """)
-
-#     sistem_terfavorit = st.radio("💡 Dari dua sistem yang kamu coba, mana yang lebih kamu sukai?", [
-#         "Aplikasi 1 - Query-Based", 
-#         "Aplikasi 2 - Case-Based"
-#     ], key="survey2_favorit")
-
-#     alasan = st.text_area("🧠 Jelaskan kenapa kamu memilih sistem tersebut:", placeholder="Tulis alasannya di sini...")
-
-#     efektifitas = st.radio("📈 Menurutmu, sistem mana yang lebih efektif dalam membantumu menemukan motor yang kamu cari?", [
-#         "Aplikasi 1 - Query-Based", 
-#         "Aplikasi 2 - Case-Based", 
-#         "Sama-sama efektif", 
-#         "Keduanya kurang efektif"
-#     ], key="survey2_efektivitas")
-
-#     if st.button("✅ Selesai & Simpan Jawaban"):
-#         st.session_state.survey_2_feedback = {
-#             "favorit": sistem_terfavorit,
-#             "alasan": alasan,
-#             "efektivitas": efektifitas
-#         }
-#         st.session_state.step = "finish"
-#         st.rerun()
 
 def step_survey_2():
-    st.subheader("⚖️ Survei Perbandingan Dua Sistem")
+    st.subheader("⚖️ Survei Perbandingan Sistem")
 
-    st.markdown("Bandingkan pengalaman kamu antara Aplikasi 1 (Query-Based) dan Aplikasi 2 (Case-Based).")
+    st.markdown("Silakan pilih sistem rekomendasi yang kamu lebih sukai dan menurutmu lebih efektif:")
 
-    survey_2_feedback = {}
+    favorit = st.radio("Sistem mana yang paling kamu sukai?", ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"], key="fav_survey2")
+    alasan = st.text_area("📝 Kenapa kamu lebih menyukai sistem tersebut?", key="alasan_survey2")
+    efektif = st.radio("Sistem mana yang menurutmu paling efektif membantu menemukan motor yang cocok?", ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"], key="eff_survey2")
 
-    st.markdown("### 🌟 Kenyamanan Penggunaan")
-    survey_2_feedback["prefer_interface"] = st.radio(
-        "Saya lebih nyaman menggunakan:",
-        ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"],
-        key="prefer_interface"
-    )
-
-    st.markdown("### 🎯 Akurasi Rekomendasi")
-    survey_2_feedback["prefer_accuracy"] = st.radio(
-        "Menurut saya, hasil rekomendasinya lebih akurat di:",
-        ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"],
-        key="prefer_accuracy"
-    )
-
-    st.markdown("### 🔁 Niat Menggunakan Kembali")
-    survey_2_feedback["reuse"] = st.radio(
-        "Jika di masa depan saya ingin mencari motor lagi, saya akan menggunakan kembali:",
-        ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"],
-        key="reuse"
-    )
-
-    st.markdown("### ✍️ Kritik / Saran (Opsional)")
-    survey_2_feedback["free_feedback"] = st.text_area("Silakan isi jika ada kritik atau saran", "")
-
-    if st.button("✅ Selesai dan Tampilkan Ringkasan Evaluasi"):
-        st.session_state.survey_2_feedback = survey_2_feedback
+    if st.button("✅ Selesai & Tampilkan Rangkuman"):
+        st.session_state.survey_2_feedback = {
+            "favorit": favorit,
+            "alasan": alasan,
+            "efektivitas": efektif
+        }
         st.session_state.step = "finish"
         st.rerun()
+
 
 
 def step_finish_evaluation():
