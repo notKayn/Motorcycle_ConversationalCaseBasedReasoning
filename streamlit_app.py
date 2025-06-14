@@ -1157,7 +1157,7 @@ def step_survey_2():
 
     if st.button("✅ Selesai dan Tampilkan Ringkasan Evaluasi"):
         st.session_state.survey_2_feedback = survey_2_feedback
-        st.session_state.step = "finish"More actions
+        st.session_state.step = "finish"
         st.rerun()
 
 
