@@ -1237,6 +1237,8 @@ def step_finish_evaluation():
     with st.expander("Lihat jawaban survei 2:"):
         st.json(st.session_state.get("survey_2_feedback", {}))
 
+    st.session_state.user_has_saved = False
+    
     # Simpan hasil akhir
     if st.button("💾 Simpan hasil jawabanmu"):
         final_data = {
