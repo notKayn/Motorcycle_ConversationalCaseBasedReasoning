@@ -919,42 +919,6 @@ def step_refinement():
         st.session_state.step = "survey_1"
         st.rerun()
 
-# def step_refine_prioritas():
-    
-#     st.subheader("🎯 Langkah 5: Mengurutkan Prioritas Atribut Refinement")
-
-#     selected_attrs = st.session_state.get("active_attrs_after_refine", [])
-#     urutan = len(selected_attrs)
-#     prioritas = {}
-#     used = []
-
-#     st.markdown("Urutkan kembali atribut yang kamu anggap paling penting:")
-
-#     for i in range(urutan):
-#         sisa_opsi = [o for o in selected_attrs if o not in used]
-#         pilihan = st.selectbox(
-#             f"Prioritas #{i+1}:",
-#             options=[""] + sisa_opsi,
-#             key=f"refine_prioritas_final_{i}"
-#         )
-#         if pilihan and pilihan not in used:
-#             prioritas[pilihan] = urutan - i
-#             used.append(pilihan)
-
-#     if len(prioritas) == urutan:
-#         if st.button("🚀 Hitung Ulang Rekomendasi"):
-#             st.session_state.prioritas_user = prioritas
-
-#             user_input = st.session_state.user_input
-#             user_vec, weight_vec = buat_user_vector_weighted(user_input, prioritas, case_vector_df, df)
-#             hasil_refined = rekomendasi_cosine_weighted(user_vec, weight_vec, case_matrix, final_df, user_input, top_n=6)
-
-#             st.session_state.refine_base_model = hasil_refined.iloc[0].to_dict()
-#             st.success("✅ Rekomendasi diperbarui!")
-#             st.session_state.step = "refinement_result"
-#             st.session_state.last_refined_result = hasil_refined
-#             st.rerun()
-
 def step_refine_prioritas():
     st.subheader("🎯 Langkah 5: Mengurutkan Prioritas Atribut Refinement")
 
@@ -1007,8 +971,6 @@ def step_refine_prioritas():
             st.session_state.step = "refinement_result"
             st.rerun()
 
-
-
 def step_refinement_result():
     
     st.subheader("✅ Langkah 6: Hasil Rekomendasi Setelah Refinement")
@@ -1023,8 +985,6 @@ def step_refinement_result():
     st.json(st.session_state.prioritas_user)
 
     hasil = st.session_state.get("last_refined_result", None)
-
-
 
     if hasil is not None:
         st.markdown("#### 🚀 Top-1 Refined Model Paling Mendekati Preferensi baru kamu:")
@@ -1263,11 +1223,11 @@ def step_finish_evaluation():
         # filepath = simpan_ke_file_json_agregat(final_data)
         st.success("✅ Hasil berhasil disimpan!")
 
-    # Tombol reset
-    if st.button("🔄 Mulai Ulang"):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
+        # Tombol reset
+        if st.button("🔄 Mulai Ulang"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
 
 
 # =================== FUNGSI ASLI ===================
