@@ -1159,7 +1159,7 @@ def step_survey_2():
 
     if st.button("✅ Selesai dan Tampilkan Ringkasan Evaluasi"):
         st.session_state.survey_2_feedback = survey_2_feedback
-        st.session_state.step = "finish_evaluation"
+        st.session_state.step = "finish"
         st.rerun()
 
 
@@ -1201,20 +1201,50 @@ def step_finish_evaluation():
     st.json(st.session_state.get("prioritas_user", {}))
     
     st.markdown("**Hasil Rekomendasi terakhir:**")
-    if "final_chosen_model" in st.session_state: # historical/cosine top1/cosine top2-6
+    # if "final_chosen_model" in st.session_state: # historical/cosine top1/cosine top2-6
+    #     st.success("Model yang dipilih olehmu sebagai rekomendasi akhir:")
+    #     tampilkan_model(st.session_state.final_chosen_model)
+    #     st.session_state.final_CRSCBR_answer = st.session_state.final_chosen_model.copy().to_dict()
+    if "final_chosen_model" in st.session_state:
         st.success("Model yang dipilih olehmu sebagai rekomendasi akhir:")
         tampilkan_model(st.session_state.final_chosen_model)
-        st.session_state.final_CRSCBR_answer = st.session_state.final_chosen_model.copy().to_dict()
+        model_final = st.session_state.final_chosen_model
+        if isinstance(model_final, pd.Series):
+            st.session_state.final_CRSCBR_answer = model_final.to_dict()
+        elif isinstance(model_final, dict):
+            st.session_state.final_CRSCBR_answer = model_final.copy()
+        else:
+            st.session_state.final_CRSCBR_answer = dict(model_final)
+    
 
-    elif "refine_base_model" in st.session_state: # keluar dari app
+    # elif "refine_base_model" in st.session_state: # keluar dari app
+    #     st.info("Model rekomendasi terakhir dari sistem:") 
+    #     tampilkan_model(st.session_state.refine_base_model)
+    #     st.session_state.final_CRSCBR_answer = st.session_state.refine_base_model.copy()
+
+    elif "refine_base_model" in st.session_state:
         st.info("Model rekomendasi terakhir dari sistem:") 
         tampilkan_model(st.session_state.refine_base_model)
-        st.session_state.final_CRSCBR_answer = st.session_state.refine_base_model.copy()
+        model_refined = st.session_state.refine_base_model
+        if isinstance(model_refined, pd.Series):
+            st.session_state.final_CRSCBR_answer = model_refined.to_dict()
+        elif isinstance(model_refined, dict):
+            st.session_state.final_CRSCBR_answer = model_refined.copy()
+        else:
+            st.session_state.final_CRSCBR_answer = dict(model_refined)
 
-    elif "hasil" in st.session_state: # where the fvck is this came from?
+
+    # elif "hasil" in st.session_state: # where the fvck is this came from?
+    #     st.warning("Model rekomendasi awal:")
+    #     tampilkan_model(st.session_state.hasil.iloc[0])
+    #     st.session_state.final_CRSCBR_answer = st.session_state.hasil.iloc[0].to_dict()
+
+    elif "hasil" in st.session_state:
         st.warning("Model rekomendasi awal:")
-        tampilkan_model(st.session_state.hasil.iloc[0])
-        st.session_state.final_CRSCBR_answer = st.session_state.hasil.iloc[0].to_dict()
+        row = st.session_state.hasil.iloc[0]
+        tampilkan_model(row)
+        st.session_state.final_CRSCBR_answer = row.to_dict() if isinstance(row, pd.Series) else dict(row)
+
 
     else:
         st.warning("Belum ada rekomendasi yang berhasil ditentukan.")
