@@ -1094,34 +1094,70 @@ def step_survey_1():
         st.session_state.step = "survey_2"
         st.rerun()
 
+# def step_survey_2():
+#     st.title("⚖️ Survei Perbandingan Dua Sistem")
+
+#     st.markdown("""
+#     Sekarang setelah kamu mencoba **dua jenis sistem rekomendasi**, kami ingin tahu pendapat akhirmu dalam membandingkan keduanya.
+#     """)
+
+#     sistem_terfavorit = st.radio("💡 Dari dua sistem yang kamu coba, mana yang lebih kamu sukai?", [
+#         "Aplikasi 1 - Query-Based", 
+#         "Aplikasi 2 - Case-Based"
+#     ], key="survey2_favorit")
+
+#     alasan = st.text_area("🧠 Jelaskan kenapa kamu memilih sistem tersebut:", placeholder="Tulis alasannya di sini...")
+
+#     efektifitas = st.radio("📈 Menurutmu, sistem mana yang lebih efektif dalam membantumu menemukan motor yang kamu cari?", [
+#         "Aplikasi 1 - Query-Based", 
+#         "Aplikasi 2 - Case-Based", 
+#         "Sama-sama efektif", 
+#         "Keduanya kurang efektif"
+#     ], key="survey2_efektivitas")
+
+#     if st.button("✅ Selesai & Simpan Jawaban"):
+#         st.session_state.survey_2_feedback = {
+#             "favorit": sistem_terfavorit,
+#             "alasan": alasan,
+#             "efektivitas": efektifitas
+#         }
+#         st.session_state.step = "finish"
+#         st.rerun()
+
 def step_survey_2():
-    st.title("⚖️ Survei Perbandingan Dua Sistem")
+    st.subheader("⚖️ Survei Perbandingan Dua Sistem")
 
-    st.markdown("""
-    Sekarang setelah kamu mencoba **dua jenis sistem rekomendasi**, kami ingin tahu pendapat akhirmu dalam membandingkan keduanya.
-    """)
+    st.markdown("Bandingkan pengalaman kamu antara Aplikasi 1 (Query-Based) dan Aplikasi 2 (Case-Based).")
 
-    sistem_terfavorit = st.radio("💡 Dari dua sistem yang kamu coba, mana yang lebih kamu sukai?", [
-        "Aplikasi 1 - Query-Based", 
-        "Aplikasi 2 - Case-Based"
-    ], key="survey2_favorit")
+    survey_2_feedback = {}
 
-    alasan = st.text_area("🧠 Jelaskan kenapa kamu memilih sistem tersebut:", placeholder="Tulis alasannya di sini...")
+    st.markdown("### 🌟 Kenyamanan Penggunaan")
+    survey_2_feedback["prefer_interface"] = st.radio(
+        "Saya lebih nyaman menggunakan:",
+        ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"],
+        key="prefer_interface"
+    )
 
-    efektifitas = st.radio("📈 Menurutmu, sistem mana yang lebih efektif dalam membantumu menemukan motor yang kamu cari?", [
-        "Aplikasi 1 - Query-Based", 
-        "Aplikasi 2 - Case-Based", 
-        "Sama-sama efektif", 
-        "Keduanya kurang efektif"
-    ], key="survey2_efektivitas")
+    st.markdown("### 🎯 Akurasi Rekomendasi")
+    survey_2_feedback["prefer_accuracy"] = st.radio(
+        "Menurut saya, hasil rekomendasinya lebih akurat di:",
+        ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"],
+        key="prefer_accuracy"
+    )
 
-    if st.button("✅ Selesai & Simpan Jawaban"):
-        st.session_state.survey_2_feedback = {
-            "favorit": sistem_terfavorit,
-            "alasan": alasan,
-            "efektivitas": efektifitas
-        }
-        st.session_state.step = "finish"
+    st.markdown("### 🔁 Niat Menggunakan Kembali")
+    survey_2_feedback["reuse"] = st.radio(
+        "Jika di masa depan saya ingin mencari motor lagi, saya akan menggunakan kembali:",
+        ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"],
+        key="reuse"
+    )
+
+    st.markdown("### ✍️ Kritik / Saran (Opsional)")
+    survey_2_feedback["free_feedback"] = st.text_area("Silakan isi jika ada kritik atau saran", "")
+
+    if st.button("✅ Selesai dan Tampilkan Ringkasan Evaluasi"):
+        st.session_state.survey_2_feedback = survey_2_feedback
+        st.session_state.step = "finish"More actions
         st.rerun()
 
 
