@@ -224,6 +224,43 @@ def step_query_based():
         "Price": "Harga (Rp)"
     }
 
+    category_label_map = {
+        "MaticDaily": "Matic harian",
+        "MaticSport": "Matic sport",
+        "MaticClassic": "Matic classic",
+        "SportNaked": "Sport naked",
+        "SportFairing": "Sport fairing",
+        "SportAdventure": "Sport adventure", 
+        "DualSport/Trail": "Trail / dual sport",
+        "Moped": "Bebek",
+        "Cruiser": "Cruiser",
+        "RetroClassic": "Retro klasik",
+        "SportRetro": "Sport retro",
+        "SuperSportFairing": "Super sport fairing",
+        "SuperSportNaked": "Super sport naked",
+        "HyperSportFairing": "Hyper sport fairing",
+        "MiniBike": "Motor mini",
+        "MiniNaked": "Motor naked mini",
+        "Touring": "Touring"
+    }
+
+    transmission_label_map = {
+        "Automatic": "Otomatis",
+        "Manual": "Manual",
+        "DCT": "Dual Clutch Transmission"
+    }
+    
+    clutch_label_map = {
+        "Wet": "Kopling basah",
+        "Dry": "Kopling kering"
+    }
+    
+    engineconfig_label_map = {
+        "NearSquare": "Near square (Performa rata diseluruh rentang putaran mesin)",
+        "OverBore": "Over bore (Performa di putaran tinggi)",
+        "OverStroke": "Over stroke (Performa di putaran rendah)"
+    }
+
     opsi_atribut = list(label_mapping.keys())
     preferensi = {}
     selected_attrs = []
@@ -239,9 +276,28 @@ def step_query_based():
                 preferensi[attr] = st.number_input(f"{label_id}:", step=1, key=f"query_val_{attr}")
             elif attr == "Price":
                 preferensi[attr] = st.number_input(f"{label_id}:", min_value=0, step=1_000_000, key=f"query_val_{attr}")
+            # elif attr in df.columns:
+            #     options = sorted(df[attr].dropna().unique())
+            #     preferensi[attr] = st.selectbox(f"{label_id}:", options, key=f"query_val_{attr}")
             elif attr in df.columns:
                 options = sorted(df[attr].dropna().unique())
-                preferensi[attr] = st.selectbox(f"{label_id}:", options, key=f"query_val_{attr}")
+                
+                # Konversi label ke user-friendly jika perlu
+                if attr == "Category":
+                    label_options = [category_label_map.get(o, o) for o in options]
+                elif attr == "ClutchType":
+                    label_options = [clutch_label_map.get(o, o) for o in options]
+                elif attr == "EngineConfig":
+                    label_options = [engineconfig_label_map.get(o, o) for o in options]
+                elif attr == "Transmission":
+                    label_options = [transmission_label_map.get(o, o) for o in options]
+                else:
+                    label_options = options  # default, no label mapping
+            
+                # Tampilkan label tapi simpan value asli
+                pilihan_label = st.selectbox(f"Silakan isi kolom atribut {label} di bawah ini.", label_options, key=f"val_{attr}")
+                index = label_options.index(pilihan_label)
+                val = options[index]
             else:
                 preferensi[attr] = st.text_input(f"{label_id}:", key=f"query_val_{attr}")
 
@@ -383,10 +439,21 @@ def step_input():
     category_label_map = {
         "MaticDaily": "Matic harian",
         "MaticSport": "Matic sport",
+        "MaticClassic": "Matic classic",
+        "SportNaked": "Sport naked",
+        "SportFairing": "Sport fairing",
+        "SportAdventure": "Sport adventure", 
+        "DualSport/Trail": "Trail / dual sport",
         "Moped": "Bebek",
-        "Naked": "Naked bike",
-        "Sport": "Sport fairing",
-        "Trail": "Trail / dual sport"
+        "Cruiser": "Cruiser",
+        "RetroClassic": "Retro klasik",
+        "SportRetro": "Sport retro",
+        "SuperSportFairing": "Super sport fairing",
+        "SuperSportNaked": "Super sport naked",
+        "HyperSportFairing": "Hyper sport fairing",
+        "MiniBike": "Motor mini",
+        "MiniNaked": "Motor naked mini",
+        "Touring": "Touring"
     }
 
     transmission_label_map = {
@@ -464,42 +531,6 @@ def step_input():
     if st.button("➡️ Lanjut ke Prioritas") and st.session_state.selected_attrs:
         st.session_state.step = "prioritas"
         st.rerun()
-
-# def step_prioritas():
-#     st.subheader("🎯 Langkah 2: Tentukan Prioritas Atribut")
-
-#     st.markdown("""
-#         Disini, kamu masukin atribut/kriteria yang tadi kamu pilih sesuai dengan kebutuhan prioritas kamu.
-#         Gampang kok, tinggal masukin aja sesuai kolom yang tersedia.  \n
-#         **Paling atas** itu **paling prioritas** yak.
-#     """)
-
-#     st.markdown("---")
-
-#     selected_attrs = st.session_state.selected_attrs
-#     urutan = len(selected_attrs)
-#     prioritas = {}
-
-#     st.markdown("Urutkan atribut yang paling kamu utamakan (1 = paling penting):")
-
-#     used = []  # untuk melacak yang sudah dipilih agar tidak muncul di selectbox berikutnya
-
-#     for i in range(urutan):
-#         sisa_opsi = [o for o in selected_attrs if o not in used]
-#         pilihan = st.selectbox(
-#             f"Prioritas #{i+1}:",
-#             options=[""] + sisa_opsi,
-#             key=f"prioritas_{i}"
-#         )
-#         if pilihan and pilihan not in used:
-#             prioritas[pilihan] = urutan - i  # bobotnya: 3, 2, 1 dst.
-#             used.append(pilihan)
-
-#     if len(prioritas) == urutan:
-#         if st.button("✅ Proses Rekomendasi"):
-#             st.session_state.prioritas_user = prioritas
-#             st.session_state.step = "rekomendasi"
-#             st.rerun()
 
 def step_prioritas():
     st.subheader("🎯 Langkah 2: Tentukan Prioritas Atribut")
@@ -749,6 +780,42 @@ def step_refinement():
         "Price": (10_000_000, 1_450_000_000, 25_000_000)
     }
 
+    category_label_map = {
+        "MaticDaily": "Matic harian",
+        "MaticSport": "Matic sport",
+        "MaticClassic": "Matic classic",
+        "SportNaked": "Sport naked",
+        "SportFairing": "Sport fairing",
+        "SportAdventure": "Sport adventure", 
+        "DualSport/Trail": "Trail / dual sport",
+        "Moped": "Bebek",
+        "Cruiser": "Cruiser",
+        "RetroClassic": "Retro klasik",
+        "SportRetro": "Sport retro",
+        "SuperSportFairing": "Super sport fairing",
+        "SuperSportNaked": "Super sport naked",
+        "HyperSportFairing": "Hyper sport fairing",
+        "MiniBike": "Motor mini",
+        "MiniNaked": "Motor naked mini",
+        "Touring": "Touring"
+    }
+
+    transmission_label_map = {
+        "Automatic": "Otomatis",
+        "DCT": "Dual Clutch Transmission"
+    }
+    
+    clutch_label_map = {
+        "Wet": "Kopling basah",
+        "Dry": "Kopling kering"
+    }
+    
+    engineconfig_label_map = {
+        "NearSquare": "Near square (Performa rata diseluruh rentang putaran mesin)",
+        "OverBore": "Over bore (Performa di putaran tinggi)",
+        "OverStroke": "Over stroke (Performa di putaran rendah)"
+    }
+
     st.markdown("###### *Checklist atribut yang ingin kamu ubah atau tambahkan")
 
     refine_selected_attrs = []
@@ -764,13 +831,39 @@ def step_refinement():
             refine_selected_attrs.append(attr)
 
             # Kategorikal
+            # if attr in df.columns and df[attr].dtype == object:
+            #     opsi = sorted(df[attr].dropna().unique())
+            #     index_default = opsi.index(val_lama) if val_lama in opsi else 0
+            #     val_baru = st.selectbox(
+            #         f"Update {label_id}:", opsi, index=index_default,
+            #         key=f"refine_val_{attr}"
+            #     )
             if attr in df.columns and df[attr].dtype == object:
                 opsi = sorted(df[attr].dropna().unique())
-                index_default = opsi.index(val_lama) if val_lama in opsi else 0
-                val_baru = st.selectbox(
-                    f"Update {label_id}:", opsi, index=index_default,
+            
+                # Konversi label untuk tampil ke user
+                if attr == "Category":
+                    label_opsi = [category_label_map.get(o, o) for o in opsi]
+                elif attr == "ClutchType":
+                    label_opsi = [clutch_label_map.get(o, o) for o in opsi]
+                elif attr == "Transmission":
+                    label_opsi = [transmission_label_map.get(o, o) for o in opsi]
+                elif attr == "EngineConfig":
+                    label_opsi = [engineconfig_label_map.get(o, o) for o in opsi]
+                else:
+                    label_opsi = opsi
+            
+                # Default index untuk pilihan
+                if val_lama in opsi:
+                    index_default = opsi.index(val_lama)
+                else:
+                    index_default = 0
+            
+                pilihan_label = st.selectbox(
+                    f"Update {label_id}:", label_opsi, index=index_default,
                     key=f"refine_val_{attr}"
                 )
+                val_baru = opsi[label_opsi.index(pilihan_label)]
 
             # Numerik
             elif attr in numeric_ranges:
