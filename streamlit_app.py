@@ -279,10 +279,30 @@ def step_query_based():
             # elif attr in df.columns:
             #     options = sorted(df[attr].dropna().unique())
             #     preferensi[attr] = st.selectbox(f"{label_id}:", options, key=f"query_val_{attr}")
+            # elif attr in df.columns:
+            #     options = sorted(df[attr].dropna().unique())
+                
+            #     # Konversi label ke user-friendly jika perlu
+            #     if attr == "Category":
+            #         label_options = [category_label_map.get(o, o) for o in options]
+            #     elif attr == "ClutchType":
+            #         label_options = [clutch_label_map.get(o, o) for o in options]
+            #     elif attr == "EngineConfig":
+            #         label_options = [engineconfig_label_map.get(o, o) for o in options]
+            #     elif attr == "Transmission":
+            #         label_options = [transmission_label_map.get(o, o) for o in options]
+            #     else:
+            #         label_options = options  # default, no label mapping
+            
+            #     # Tampilkan label tapi simpan value asli
+            #     pilihan_label = st.selectbox(f"Silakan isi kolom atribut {label_id} di bawah ini.", label_options, key=f"val_{attr}")
+            #     index = label_options.index(pilihan_label)
+            #     val = options[index]
+            #     preferensi[attr] = val
+
             elif attr in df.columns:
                 options = sorted(df[attr].dropna().unique())
-                
-                # Konversi label ke user-friendly jika perlu
+            
                 if attr == "Category":
                     label_options = [category_label_map.get(o, o) for o in options]
                 elif attr == "ClutchType":
@@ -292,13 +312,14 @@ def step_query_based():
                 elif attr == "Transmission":
                     label_options = [transmission_label_map.get(o, o) for o in options]
                 else:
-                    label_options = options  # default, no label mapping
+                    label_options = options
             
-                # Tampilkan label tapi simpan value asli
                 pilihan_label = st.selectbox(f"Silakan isi kolom atribut {label_id} di bawah ini.", label_options, key=f"val_{attr}")
                 index = label_options.index(pilihan_label)
                 val = options[index]
-                preferensi[attr] = val
+                preferensi[attr] = val  # ✅ INI YANG KURANG!
+
+    
             else:
                 preferensi[attr] = st.text_input(f"{label_id}:", key=f"query_val_{attr}")
 
