@@ -1264,11 +1264,7 @@ def step_finish_evaluation():
 
     # Tombol reset setelah simpan
     if st.session_state.get("user_has_saved", False):
-        if st.button("🔄 Balik lagi ke halaman awal?"):
-            for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.session_state.step = "intro"
-            st.rerun()
+        st.success("Jika kamu masih ingin mencoba lagi dari awal, silakan refresh halamannya ya 🙏")
 
 
 
@@ -1585,11 +1581,6 @@ def tampilkan_model(row, judul=None):
 
 
 # =================== STREAMLIT APP ===================
-
-# Cek apakah ada instruksi untuk pindah ke step baru setelah reset
-if "__next_step" in st.session_state:
-    st.session_state.step = st.session_state["__next_step"]
-    del st.session_state["__next_step"]
 
 
 if st.session_state.step == "intro":
