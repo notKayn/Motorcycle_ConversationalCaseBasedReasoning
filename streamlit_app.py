@@ -1238,7 +1238,7 @@ def step_finish_evaluation():
         st.json(st.session_state.get("survey_2_feedback", {}))
 
     # Simpan hasil akhir
-    if st.button("💾 Simpan Semua Hasil ke Cloud"):
+    if st.button("💾 Simpan hasil jawabanmu"):
         final_data = {
             "identity": st.session_state.get("user_identity"),
             "query_input": st.session_state.get("query_input"),
@@ -1258,12 +1258,14 @@ def step_finish_evaluation():
 
         # filepath = simpan_ke_file_json_agregat(final_data)
         st.success("✅ Hasil berhasil disimpan!")
+        st.session_state.user_has_saved = True
 
     # Tombol reset
-    if st.button("🔄 Mulai Ulang"):
-        for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
+    if st.session_state.user_has_saved == True:
+        if st.button("🔄 Mulai Ulang"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]
+            st.rerun()
 
 
 # =================== FUNGSI ASLI ===================
