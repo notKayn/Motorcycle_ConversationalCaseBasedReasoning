@@ -1416,39 +1416,39 @@ def flatten_dict(d, parent_key='', sep='_'):
 # ==========================
 # Format data user untuk Google Sheets
 # ==========================
-# def format_data_for_gsheet(data_dict):
-#     formatted = {}
-#     for k, v in data_dict.items():
-#         if v is None:
-#             formatted[k] = "N/A"
-#         elif isinstance(v, (dict, list)):
-#             try:
-#                 formatted[k] = json.dumps(v, ensure_ascii=False)
-#             except:
-#                 formatted[k] = str(v)
-#         elif isinstance(v, (pd.Series, pd.DataFrame)):
-#             formatted[k] = str(v.to_dict())
-#         else:
-#             formatted[k] = str(v)
-#     return formatted
-
 def format_data_for_gsheet(data_dict):
     formatted = {}
     for k, v in data_dict.items():
         if v is None:
             formatted[k] = "N/A"
-        elif isinstance(v, dict):
-            # Flatten nested dicts like survey_1_feedback, etc.
-            flat = flatten_dict(v, parent_key=k)
-            for sub_k, sub_v in flat.items():
-                formatted[sub_k] = str(sub_v)
-        elif isinstance(v, list):
-            formatted[k] = json.dumps(v, ensure_ascii=False)
+        elif isinstance(v, (dict, list)):
+            try:
+                formatted[k] = json.dumps(v, ensure_ascii=False)
+            except:
+                formatted[k] = str(v)
         elif isinstance(v, (pd.Series, pd.DataFrame)):
             formatted[k] = str(v.to_dict())
         else:
             formatted[k] = str(v)
     return formatted
+
+# def format_data_for_gsheet(data_dict):
+#     formatted = {}
+#     for k, v in data_dict.items():
+#         if v is None:
+#             formatted[k] = "N/A"
+#         elif isinstance(v, dict):
+#             # Flatten nested dicts like survey_1_feedback, etc.
+#             flat = flatten_dict(v, parent_key=k)
+#             for sub_k, sub_v in flat.items():
+#                 formatted[sub_k] = str(sub_v)
+#         elif isinstance(v, list):
+#             formatted[k] = json.dumps(v, ensure_ascii=False)
+#         elif isinstance(v, (pd.Series, pd.DataFrame)):
+#             formatted[k] = str(v.to_dict())
+#         else:
+#             formatted[k] = str(v)
+#     return formatted
 
 
 
