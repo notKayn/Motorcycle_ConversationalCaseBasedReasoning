@@ -276,30 +276,6 @@ def step_query_based():
                 preferensi[attr] = st.number_input(f"{label_id}:", step=1, key=f"query_val_{attr}")
             elif attr == "Price":
                 preferensi[attr] = st.number_input(f"{label_id}:", min_value=0, step=1_000_000, key=f"query_val_{attr}")
-            # elif attr in df.columns:
-            #     options = sorted(df[attr].dropna().unique())
-            #     preferensi[attr] = st.selectbox(f"{label_id}:", options, key=f"query_val_{attr}")
-            # elif attr in df.columns:
-            #     options = sorted(df[attr].dropna().unique())
-                
-            #     # Konversi label ke user-friendly jika perlu
-            #     if attr == "Category":
-            #         label_options = [category_label_map.get(o, o) for o in options]
-            #     elif attr == "ClutchType":
-            #         label_options = [clutch_label_map.get(o, o) for o in options]
-            #     elif attr == "EngineConfig":
-            #         label_options = [engineconfig_label_map.get(o, o) for o in options]
-            #     elif attr == "Transmission":
-            #         label_options = [transmission_label_map.get(o, o) for o in options]
-            #     else:
-            #         label_options = options  # default, no label mapping
-            
-            #     # Tampilkan label tapi simpan value asli
-            #     pilihan_label = st.selectbox(f"Silakan isi kolom atribut {label_id} di bawah ini.", label_options, key=f"val_{attr}")
-            #     index = label_options.index(pilihan_label)
-            #     val = options[index]
-            #     preferensi[attr] = val
-
             elif attr in df.columns:
                 options = sorted(df[attr].dropna().unique())
             
@@ -317,9 +293,7 @@ def step_query_based():
                 pilihan_label = st.selectbox(f"Silakan isi kolom atribut {label_id} di bawah ini.", label_options, key=f"val_{attr}")
                 index = label_options.index(pilihan_label)
                 val = options[index]
-                preferensi[attr] = val  # ✅ INI YANG KURANG!
-
-    
+                preferensi[attr] = val 
             else:
                 preferensi[attr] = st.text_input(f"{label_id}:", key=f"query_val_{attr}")
 
@@ -520,11 +494,7 @@ def step_input():
                     f"{label}:", 10_000_000, 1_500_000_000,
                     25_000_000, step=1_000_000, key=f"val_{attr}"
                 )
-
-            # elif attr in df.columns:
-            #     options = sorted(df[attr].dropna().unique())
-            #     val = st.selectbox(f"{label}:", options, key=f"val_{attr}")
-            
+                
             elif attr in df.columns:
                 options = sorted(df[attr].dropna().unique())
                 
@@ -852,14 +822,6 @@ def step_refinement():
         if aktif:
             refine_selected_attrs.append(attr)
 
-            # Kategorikal
-            # if attr in df.columns and df[attr].dtype == object:
-            #     opsi = sorted(df[attr].dropna().unique())
-            #     index_default = opsi.index(val_lama) if val_lama in opsi else 0
-            #     val_baru = st.selectbox(
-            #         f"Update {label_id}:", opsi, index=index_default,
-            #         key=f"refine_val_{attr}"
-            #     )
             if attr in df.columns and df[attr].dtype == object:
                 opsi = sorted(df[attr].dropna().unique())
             
@@ -1007,7 +969,6 @@ def step_refinement_result():
         if st.button("✅ Saya puas dengan refined model motor Top-1"):
             top1_refinedmodel = hasil.iloc[0].copy()
             top1_refinedmodel["source"] = "cosine_similarity"
-            # simpan_case_model(st.session_state.user_input, top1_refinedmodel, refined=True, refine_log=st.session_state.refine_steps, user_ranked=False)
             simpan_case_model_gsheet(
                 user_input=st.session_state.user_input,
                 row_model=top1_refinedmodel,
@@ -1064,66 +1025,143 @@ def step_refinement_result():
                 st.session_state.step = "survey_1"
                 st.rerun()
 
+# def step_survey_1():
+#     st.title("📝 Survei Pengalaman - Aplikasi 2 (Case-Based Recommender)")
+
+#     st.markdown("""
+#     Terima kasih telah mencoba aplikasi kedua. Kami ingin tahu pendapat kamu terhadap sistem rekomendasi ini.
+#     """)
+
+#     rating_akurasi = st.radio("🎯 Menurut kamu, seberapa akurat sistem ini dalam merekomendasikan motor yang sesuai?", [
+#         "Sangat akurat", "Cukup akurat", "Kurang akurat", "Tidak akurat"
+#     ], key="cb_akurasi")
+
+#     rating_puasan = st.radio("😊 Apakah kamu puas dengan hasil rekomendasi yang diberikan oleh sistem ini?", [
+#         "Sangat puas", "Puas", "Kurang puas", "Tidak puas"
+#     ], key="cb_puasan")
+
+#     rating_pengalaman = st.radio("🧭 Bagaimana pengalaman kamu saat menggunakan aplikasi ini?", [
+#         "Sangat nyaman", "Cukup nyaman", "Sedikit membingungkan", "Tidak nyaman"
+#     ], key="cb_pengalaman")
+
+#     saran = st.text_area("💬 Ada saran, kritik, atau komentar lainnya?", placeholder="Tulis pendapat kamu di sini...")
+
+#     if st.button("➡️ Lanjut ke Survei Perbandingan"):
+#         st.session_state.survey_1_feedback = {
+#             "akurasi": rating_akurasi,
+#             "puasan": rating_puasan,
+#             "pengalaman": rating_pengalaman,
+#             "saran": saran
+#         }
+#         st.session_state.step = "survey_2"
+#         st.rerun()
+
 def step_survey_1():
-    st.title("📝 Survei Pengalaman - Aplikasi 2 (Case-Based Recommender)")
+    st.subheader("📝 Survei Pengalaman dengan Aplikasi 2 (Case-Based)")
+    st.markdown("Berikan penilaianmu terhadap sistem rekomendasi Case-Based berdasarkan pengalaman kamu.")
+    st.markdown("Skala penilaian:")
+    st.markdown("- 1 = Sangat Tidak Setuju")
+    st.markdown("- 5 = Sangat Setuju")
 
-    st.markdown("""
-    Terima kasih telah mencoba aplikasi kedua. Kami ingin tahu pendapat kamu terhadap sistem rekomendasi ini.
-    """)
+    skala = [1, 2, 3, 4, 5]
+    survey_1_feedback = {}
 
-    rating_akurasi = st.radio("🎯 Menurut kamu, seberapa akurat sistem ini dalam merekomendasikan motor yang sesuai?", [
-        "Sangat akurat", "Cukup akurat", "Kurang akurat", "Tidak akurat"
-    ], key="cb_akurasi")
+    st.markdown("### 🎯 Kualitas Rekomendasi (PRQ)")
+    survey_1_feedback["prq_like_product"] = st.selectbox("Saya menyukai model motor yang saya pilih", skala)
+    survey_1_feedback["prq_dislike_interaction"] = st.selectbox("Saya tidak suka interaksi dengan sistem ini", skala)
 
-    rating_puasan = st.radio("😊 Apakah kamu puas dengan hasil rekomendasi yang diberikan oleh sistem ini?", [
-        "Sangat puas", "Puas", "Kurang puas", "Tidak puas"
-    ], key="cb_puasan")
+    st.markdown("### ⚡ Efisiensi (PE)")
+    survey_1_feedback["pe_fast_find"] = st.selectbox("Saya bisa menemukan motor yang saya suka dengan cepat", skala)
 
-    rating_pengalaman = st.radio("🧭 Bagaimana pengalaman kamu saat menggunakan aplikasi ini?", [
-        "Sangat nyaman", "Cukup nyaman", "Sedikit membingungkan", "Tidak nyaman"
-    ], key="cb_pengalaman")
+    st.markdown("### 🤝 Kepercayaan (TR)")
+    survey_1_feedback["tr_would_buy"] = st.selectbox("Saya akan membeli motor ini suatu hari nanti", skala)
+    survey_1_feedback["tr_use_again"] = st.selectbox("Saya ingin menggunakan sistem ini lagi di masa depan", skala)
 
-    saran = st.text_area("💬 Ada saran, kritik, atau komentar lainnya?", placeholder="Tulis pendapat kamu di sini...")
+    st.markdown("### 📖 Informasi (INF)")
+    survey_1_feedback["inf_easy_info"] = st.selectbox("Saya mudah mendapatkan informasi tentang motor", skala)
 
+    st.markdown("### 🧭 Kemudahan Penggunaan (ETU)")
+    survey_1_feedback["etu_difficult_find"] = st.selectbox("Saya merasa sulit menemukan motor yang sesuai keinginan", skala)
+    survey_1_feedback["etu_no_difficulty"] = st.selectbox("Saya tidak mengalami kesulitan saat menggunakan sistem", skala)
+
+    st.markdown("### 🧠 Kemudahan Memahami (EOU)")
+    survey_1_feedback["eou_easy_options"] = st.selectbox("Pertanyaan dan pilihan mudah dipahami", skala)
+    survey_1_feedback["eou_understood_all"] = st.selectbox("Saya paham semua yang ditampilkan dalam sistem", skala)
+
+    st.markdown("---")
     if st.button("➡️ Lanjut ke Survei Perbandingan"):
-        st.session_state.survey_1_feedback = {
-            "akurasi": rating_akurasi,
-            "puasan": rating_puasan,
-            "pengalaman": rating_pengalaman,
-            "saran": saran
-        }
+        st.session_state.survey_1_feedback = survey_1_feedback
         st.session_state.step = "survey_2"
         st.rerun()
 
+
+
+# def step_survey_2():
+#     st.title("⚖️ Survei Perbandingan Dua Sistem")
+
+#     st.markdown("""
+#     Sekarang setelah kamu mencoba **dua jenis sistem rekomendasi**, kami ingin tahu pendapat akhirmu dalam membandingkan keduanya.
+#     """)
+
+#     sistem_terfavorit = st.radio("💡 Dari dua sistem yang kamu coba, mana yang lebih kamu sukai?", [
+#         "Aplikasi 1 - Query-Based", 
+#         "Aplikasi 2 - Case-Based"
+#     ], key="survey2_favorit")
+
+#     alasan = st.text_area("🧠 Jelaskan kenapa kamu memilih sistem tersebut:", placeholder="Tulis alasannya di sini...")
+
+#     efektifitas = st.radio("📈 Menurutmu, sistem mana yang lebih efektif dalam membantumu menemukan motor yang kamu cari?", [
+#         "Aplikasi 1 - Query-Based", 
+#         "Aplikasi 2 - Case-Based", 
+#         "Sama-sama efektif", 
+#         "Keduanya kurang efektif"
+#     ], key="survey2_efektivitas")
+
+#     if st.button("✅ Selesai & Simpan Jawaban"):
+#         st.session_state.survey_2_feedback = {
+#             "favorit": sistem_terfavorit,
+#             "alasan": alasan,
+#             "efektivitas": efektifitas
+#         }
+#         st.session_state.step = "finish"
+#         st.rerun()
+
 def step_survey_2():
-    st.title("⚖️ Survei Perbandingan Dua Sistem")
+    st.subheader("⚖️ Survei Perbandingan Dua Sistem")
 
-    st.markdown("""
-    Sekarang setelah kamu mencoba **dua jenis sistem rekomendasi**, kami ingin tahu pendapat akhirmu dalam membandingkan keduanya.
-    """)
+    st.markdown("Bandingkan pengalaman kamu antara Aplikasi 1 (Query-Based) dan Aplikasi 2 (Case-Based).")
 
-    sistem_terfavorit = st.radio("💡 Dari dua sistem yang kamu coba, mana yang lebih kamu sukai?", [
-        "Aplikasi 1 - Query-Based", 
-        "Aplikasi 2 - Case-Based"
-    ], key="survey2_favorit")
+    survey_2_feedback = {}
 
-    alasan = st.text_area("🧠 Jelaskan kenapa kamu memilih sistem tersebut:", placeholder="Tulis alasannya di sini...")
+    st.markdown("### 🌟 Kenyamanan Penggunaan")
+    survey_2_feedback["prefer_interface"] = st.radio(
+        "Saya lebih nyaman menggunakan:",
+        ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"],
+        key="prefer_interface"
+    )
 
-    efektifitas = st.radio("📈 Menurutmu, sistem mana yang lebih efektif dalam membantumu menemukan motor yang kamu cari?", [
-        "Aplikasi 1 - Query-Based", 
-        "Aplikasi 2 - Case-Based", 
-        "Sama-sama efektif", 
-        "Keduanya kurang efektif"
-    ], key="survey2_efektivitas")
+    st.markdown("### 🎯 Akurasi Rekomendasi")
+    survey_2_feedback["prefer_accuracy"] = st.radio(
+        "Menurut saya, hasil rekomendasinya lebih akurat di:",
+        ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"],
+        key="prefer_accuracy"
+    )
 
-    if st.button("✅ Selesai & Simpan Jawaban"):
-        st.session_state.survey_2_feedback = {
-            "favorit": sistem_terfavorit,
-            "alasan": alasan,
-            "efektivitas": efektifitas
-        }
-        st.session_state.step = "finish"
+    st.markdown("### 🔁 Niat Menggunakan Kembali")
+    survey_2_feedback["reuse"] = st.radio(
+        "Jika di masa depan saya ingin mencari motor lagi, saya akan menggunakan kembali:",
+        ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"],
+        key="reuse"
+    )
+
+    st.markdown("### ✍️ Kritik / Saran (Opsional)")
+    survey_2_feedback["free_feedback"] = st.text_area("Silakan isi jika ada kritik atau saran", "")
+
+    if st.button("✅ Selesai dan Tampilkan Ringkasan Evaluasi"):
+        st.session_state.survey_2_feedback = survey_2_feedback
+        st.session_state.step = "finish_evaluation"
         st.rerun()
+
 
 def step_finish_evaluation():
     st.title("🎉 Evaluasi Selesai")
@@ -1329,24 +1367,57 @@ def generate_case_id():
     return f"case_{datetime.now(pytz.timezone('Asia/Jakarta')).strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:6]}"
 
 
+
+def flatten_dict(d, parent_key='', sep='_'):
+    items = []
+    for k, v in d.items():
+        new_key = f"{parent_key}{sep}{k}" if parent_key else k
+        if isinstance(v, dict):
+            items.extend(flatten_dict(v, new_key, sep=sep).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)
+
+
+
+
 # ==========================
 # Format data user untuk Google Sheets
 # ==========================
+# def format_data_for_gsheet(data_dict):
+#     formatted = {}
+#     for k, v in data_dict.items():
+#         if v is None:
+#             formatted[k] = "N/A"
+#         elif isinstance(v, (dict, list)):
+#             try:
+#                 formatted[k] = json.dumps(v, ensure_ascii=False)
+#             except:
+#                 formatted[k] = str(v)
+#         elif isinstance(v, (pd.Series, pd.DataFrame)):
+#             formatted[k] = str(v.to_dict())
+#         else:
+#             formatted[k] = str(v)
+#     return formatted
+
 def format_data_for_gsheet(data_dict):
     formatted = {}
     for k, v in data_dict.items():
         if v is None:
             formatted[k] = "N/A"
-        elif isinstance(v, (dict, list)):
-            try:
-                formatted[k] = json.dumps(v, ensure_ascii=False)
-            except:
-                formatted[k] = str(v)
+        elif isinstance(v, dict):
+            # Flatten nested dicts like survey_1_feedback, etc.
+            flat = flatten_dict(v, parent_key=k)
+            for sub_k, sub_v in flat.items():
+                formatted[sub_k] = str(sub_v)
+        elif isinstance(v, list):
+            formatted[k] = json.dumps(v, ensure_ascii=False)
         elif isinstance(v, (pd.Series, pd.DataFrame)):
             formatted[k] = str(v.to_dict())
         else:
             formatted[k] = str(v)
     return formatted
+
 
 
 # ==========================
