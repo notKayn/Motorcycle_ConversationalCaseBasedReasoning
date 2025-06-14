@@ -380,6 +380,27 @@ def step_input():
         "Price": (10_000_000, 1_450_000_000_000, 25_000_000)
     }
 
+    category_label_map = {
+        "MaticDaily": "Matic harian",
+        "MaticSport": "Matic sport",
+        "Moped": "Bebek",
+        "Naked": "Naked bike",
+        "Sport": "Sport fairing",
+        "Trail": "Trail / dual sport"
+    }
+    
+    clutch_label_map = {
+        "Wet": "Kopling basah",
+        "Dry": "Kopling kering",
+        "DCT": "Dual Clutch Transmission"
+    }
+    
+    engineconfig_label_map = {
+        "NearSquare": "Near square (performa linear)",
+        "Overbore": "Over bore (putaran tinggi)",
+        "Overstroke": "Over stroke (putaran rendah)"
+    }
+
     st.markdown("✅ Checklist atribut yang ingin kamu isi:")
 
     # Reset setiap kali halaman ini diakses ulang
@@ -407,9 +428,27 @@ def step_input():
                     25_000_000, step=1_000_000, key=f"val_{attr}"
                 )
 
+            # elif attr in df.columns:
+            #     options = sorted(df[attr].dropna().unique())
+            #     val = st.selectbox(f"{label}:", options, key=f"val_{attr}")
+            
             elif attr in df.columns:
                 options = sorted(df[attr].dropna().unique())
-                val = st.selectbox(f"{label}:", options, key=f"val_{attr}")
+                
+                # Konversi label ke user-friendly jika perlu
+                if attr == "Category":
+                    label_options = [category_label_map.get(o, o) for o in options]
+                elif attr == "ClutchType":
+                    label_options = [clutch_label_map.get(o, o) for o in options]
+                elif attr == "EngineConfig":
+                    label_options = [engineconfig_label_map.get(o, o) for o in options]
+                else:
+                    label_options = options  # default, no label mapping
+            
+                # Tampilkan label tapi simpan value asli
+                pilihan_label = st.selectbox(f"{label}:", label_options, key=f"val_{attr}")
+                index = label_options.index(pilihan_label)
+                val = options[index]
 
             else:
                 val = st.text_input(f"{label}:", key=f"val_{attr}")
