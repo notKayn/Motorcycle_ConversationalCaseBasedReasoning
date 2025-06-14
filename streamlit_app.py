@@ -1262,21 +1262,20 @@ def step_finish_evaluation():
         st.success("✅ Hasil berhasil disimpan!")
         st.session_state.user_has_saved = True
 
-    if st.session_state.user_has_saved == True:
-        if st.button("🔄 Balik lagi ke page paling awal?"):
-            # Simpan step baru dulu sebelum hapus state lainnya
-            st.session_state.new_step = "intro"
-    
-            # Reset semua kecuali step
-            for key in list(st.session_state.keys()):
-                if key != "new_step":
-                    del st.session_state[key]
-    
-            # Assign step yang baru
-            st.session_state.step = st.session_state.new_step
-            del st.session_state["new_step"]
-    
-            st.rerun()
+    # Tombol reset setelah simpan
+if st.session_state.get("user_has_saved") == True:
+    if st.button("🔄 Balik lagi ke page paling awal?"):
+        # Simpan step target sebelum menghapus session
+        st.session_state["__next_step"] = "intro"
+
+        # Hapus semua session kecuali __next_step
+        keys_to_keep = ["__next_step"]
+        for key in list(st.session_state.keys()):
+            if key not in keys_to_keep:
+                del st.session_state[key]
+
+        st.rerun()
+
 
 
 
@@ -1592,6 +1591,12 @@ def tampilkan_model(row, judul=None):
 
 
 # =================== STREAMLIT APP ===================
+
+# Cek apakah ada instruksi untuk pindah ke step baru setelah reset
+if "__next_step" in st.session_state:
+    st.session_state.step = st.session_state["__next_step"]
+    del st.session_state["__next_step"]
+
 
 if st.session_state.step == "intro":
     step_intro()
