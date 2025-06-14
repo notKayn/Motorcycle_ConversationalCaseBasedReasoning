@@ -420,34 +420,83 @@ def step_input():
         st.session_state.step = "prioritas"
         st.rerun()
 
+# def step_prioritas():
+#     st.subheader("🎯 Langkah 2: Tentukan Prioritas Atribut")
+
+#     st.markdown("""
+#         Disini, kamu masukin atribut/kriteria yang tadi kamu pilih sesuai dengan kebutuhan prioritas kamu.
+#         Gampang kok, tinggal masukin aja sesuai kolom yang tersedia.  \n
+#         **Paling atas** itu **paling prioritas** yak.
+#     """)
+
+#     st.markdown("---")
+
+#     selected_attrs = st.session_state.selected_attrs
+#     urutan = len(selected_attrs)
+#     prioritas = {}
+
+#     st.markdown("Urutkan atribut yang paling kamu utamakan (1 = paling penting):")
+
+#     used = []  # untuk melacak yang sudah dipilih agar tidak muncul di selectbox berikutnya
+
+#     for i in range(urutan):
+#         sisa_opsi = [o for o in selected_attrs if o not in used]
+#         pilihan = st.selectbox(
+#             f"Prioritas #{i+1}:",
+#             options=[""] + sisa_opsi,
+#             key=f"prioritas_{i}"
+#         )
+#         if pilihan and pilihan not in used:
+#             prioritas[pilihan] = urutan - i  # bobotnya: 3, 2, 1 dst.
+#             used.append(pilihan)
+
+#     if len(prioritas) == urutan:
+#         if st.button("✅ Proses Rekomendasi"):
+#             st.session_state.prioritas_user = prioritas
+#             st.session_state.step = "rekomendasi"
+#             st.rerun()
+
 def step_prioritas():
     st.subheader("🎯 Langkah 2: Tentukan Prioritas Atribut")
 
     st.markdown("""
-        Disini, kamu masukin atribut/kriteria yang tadi kamu pilih sesuai dengan kebutuhan prioritas kamu.
-        Gampang kok, tinggal masukin aja sesuai kolom yang tersedia.  \n
+        Disini, kamu masukin atribut/kriteria yang tadi kamu pilih sesuai dengan kebutuhan prioritas kamu.  
         **Paling atas** itu **paling prioritas** yak.
     """)
 
-    st.markdown("---")
+    label_mapping = {
+        "Brand": "Merek",
+        "Category": "Kategori",
+        "Transmission": "Transmisi",
+        "ClutchType": "Jenis Kopling",
+        "Bore": "Diameter Silinder (mm)",
+        "Stroke": "Langkah Piston (mm)",
+        "PistonCount": "Jumlah Piston",
+        "Displacement": "Kapasitas Mesin (cc)",
+        "PowerHP": "Tenaga Maksimum (HP)",
+        "EngineConfig": "Konfigurasi Mesin",
+        "FuelTank": "Kapasitas Tangki (L)",
+        "WeightKG": "Berat Motor (kg)",
+        "FuelConsumptionKML": "Konsumsi BBM (km/L)",
+        "Price": "Harga (Rp)"
+    }
 
     selected_attrs = st.session_state.selected_attrs
     urutan = len(selected_attrs)
     prioritas = {}
+    used = []
 
     st.markdown("Urutkan atribut yang paling kamu utamakan (1 = paling penting):")
 
-    used = []  # untuk melacak yang sudah dipilih agar tidak muncul di selectbox berikutnya
-
     for i in range(urutan):
-        sisa_opsi = [o for o in selected_attrs if o not in used]
-        pilihan = st.selectbox(
-            f"Prioritas #{i+1}:",
-            options=[""] + sisa_opsi,
-            key=f"prioritas_{i}"
+        sisa_opsi = [a for a in selected_attrs if a not in used]
+        label_opsi = [label_mapping.get(o, o) for o in sisa_opsi]
+        pilihan_label = st.selectbox(
+            f"Prioritas #{i+1}:", options=[""] + label_opsi, key=f"prioritas_{i}"
         )
-        if pilihan and pilihan not in used:
-            prioritas[pilihan] = urutan - i  # bobotnya: 3, 2, 1 dst.
+        if pilihan_label and pilihan_label != "":
+            pilihan = sisa_opsi[label_opsi.index(pilihan_label)]
+            prioritas[pilihan] = urutan - i
             used.append(pilihan)
 
     if len(prioritas) == urutan:
@@ -455,6 +504,8 @@ def step_prioritas():
             st.session_state.prioritas_user = prioritas
             st.session_state.step = "rekomendasi"
             st.rerun()
+
+
 
 def step_rekomendasi():
     st.subheader("📈 Langkah 3: Hasil Rekomendasi")
@@ -708,9 +759,61 @@ def step_refinement():
         st.session_state.step = "survey_1"
         st.rerun()
 
-def step_refine_prioritas():
+# def step_refine_prioritas():
     
+#     st.subheader("🎯 Langkah 5: Mengurutkan Prioritas Atribut Refinement")
+
+#     selected_attrs = st.session_state.get("active_attrs_after_refine", [])
+#     urutan = len(selected_attrs)
+#     prioritas = {}
+#     used = []
+
+#     st.markdown("Urutkan kembali atribut yang kamu anggap paling penting:")
+
+#     for i in range(urutan):
+#         sisa_opsi = [o for o in selected_attrs if o not in used]
+#         pilihan = st.selectbox(
+#             f"Prioritas #{i+1}:",
+#             options=[""] + sisa_opsi,
+#             key=f"refine_prioritas_final_{i}"
+#         )
+#         if pilihan and pilihan not in used:
+#             prioritas[pilihan] = urutan - i
+#             used.append(pilihan)
+
+#     if len(prioritas) == urutan:
+#         if st.button("🚀 Hitung Ulang Rekomendasi"):
+#             st.session_state.prioritas_user = prioritas
+
+#             user_input = st.session_state.user_input
+#             user_vec, weight_vec = buat_user_vector_weighted(user_input, prioritas, case_vector_df, df)
+#             hasil_refined = rekomendasi_cosine_weighted(user_vec, weight_vec, case_matrix, final_df, user_input, top_n=6)
+
+#             st.session_state.refine_base_model = hasil_refined.iloc[0].to_dict()
+#             st.success("✅ Rekomendasi diperbarui!")
+#             st.session_state.step = "refinement_result"
+#             st.session_state.last_refined_result = hasil_refined
+#             st.rerun()
+
+def step_refine_prioritas():
     st.subheader("🎯 Langkah 5: Mengurutkan Prioritas Atribut Refinement")
+
+    label_mapping = {
+        "Brand": "Merek",
+        "Category": "Kategori",
+        "Transmission": "Transmisi",
+        "ClutchType": "Jenis Kopling",
+        "Bore": "Diameter Silinder (mm)",
+        "Stroke": "Langkah Piston (mm)",
+        "PistonCount": "Jumlah Piston",
+        "Displacement": "Kapasitas Mesin (cc)",
+        "PowerHP": "Tenaga Maksimum (HP)",
+        "EngineConfig": "Konfigurasi Mesin",
+        "FuelTank": "Kapasitas Tangki (L)",
+        "WeightKG": "Berat Motor (kg)",
+        "FuelConsumptionKML": "Konsumsi BBM (km/L)",
+        "Price": "Harga (Rp)"
+    }
 
     selected_attrs = st.session_state.get("active_attrs_after_refine", [])
     urutan = len(selected_attrs)
@@ -720,13 +823,13 @@ def step_refine_prioritas():
     st.markdown("Urutkan kembali atribut yang kamu anggap paling penting:")
 
     for i in range(urutan):
-        sisa_opsi = [o for o in selected_attrs if o not in used]
-        pilihan = st.selectbox(
-            f"Prioritas #{i+1}:",
-            options=[""] + sisa_opsi,
-            key=f"refine_prioritas_final_{i}"
+        sisa_opsi = [a for a in selected_attrs if a not in used]
+        label_opsi = [label_mapping.get(o, o) for o in sisa_opsi]
+        pilihan_label = st.selectbox(
+            f"Prioritas #{i+1}:", options=[""] + label_opsi, key=f"refine_prioritas_final_{i}"
         )
-        if pilihan and pilihan not in used:
+        if pilihan_label and pilihan_label != "":
+            pilihan = sisa_opsi[label_opsi.index(pilihan_label)]
             prioritas[pilihan] = urutan - i
             used.append(pilihan)
 
@@ -739,10 +842,12 @@ def step_refine_prioritas():
             hasil_refined = rekomendasi_cosine_weighted(user_vec, weight_vec, case_matrix, final_df, user_input, top_n=6)
 
             st.session_state.refine_base_model = hasil_refined.iloc[0].to_dict()
+            st.session_state.last_refined_result = hasil_refined
             st.success("✅ Rekomendasi diperbarui!")
             st.session_state.step = "refinement_result"
-            st.session_state.last_refined_result = hasil_refined
             st.rerun()
+
+
 
 def step_refinement_result():
     
