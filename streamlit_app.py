@@ -388,11 +388,15 @@ def step_input():
         "Sport": "Sport fairing",
         "Trail": "Trail / dual sport"
     }
+
+    transmission_label_map = {
+        "Automatic": "Otomatis",
+        "DCT": "Dual Clutch Transmission"
+    }
     
     clutch_label_map = {
         "Wet": "Kopling basah",
-        "Dry": "Kopling kering",
-        "DCT": "Dual Clutch Transmission"
+        "Dry": "Kopling kering"
     }
     
     engineconfig_label_map = {
@@ -442,6 +446,8 @@ def step_input():
                     label_options = [clutch_label_map.get(o, o) for o in options]
                 elif attr == "EngineConfig":
                     label_options = [engineconfig_label_map.get(o, o) for o in options]
+                elif attr == "Transmission":
+                    label_options = [transmission_label_map.get(o, o) for o in options]
                 else:
                     label_options = options  # default, no label mapping
             
