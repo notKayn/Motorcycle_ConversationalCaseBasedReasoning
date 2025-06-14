@@ -1088,7 +1088,7 @@ def step_survey_1():
     survey_1_feedback["eou_easy_options"] = st.selectbox("Pertanyaan dan pilihan mudah dipahami", skala)
     survey_1_feedback["eou_understood_all"] = st.selectbox("Saya paham semua yang ditampilkan dalam sistem", skala)
 
-    st.markdown("---")More actions
+    st.markdown("---")
     if st.button("➡️ Lanjut ke Survei Perbandingan"):
         st.session_state.survey_1_feedback = survey_1_feedback
         st.session_state.step = "survey_2"
