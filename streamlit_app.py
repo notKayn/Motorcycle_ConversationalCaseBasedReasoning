@@ -298,6 +298,7 @@ def step_query_based():
                 pilihan_label = st.selectbox(f"Silakan isi kolom atribut {label_id} di bawah ini.", label_options, key=f"val_{attr}")
                 index = label_options.index(pilihan_label)
                 val = options[index]
+                preferensi[attr] = val
             else:
                 preferensi[attr] = st.text_input(f"{label_id}:", key=f"query_val_{attr}")
 
