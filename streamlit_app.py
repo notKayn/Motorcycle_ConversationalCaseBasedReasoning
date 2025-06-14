@@ -1264,9 +1264,10 @@ def step_finish_evaluation():
 
     # Tombol reset
     if st.session_state.user_has_saved == True:
-        if st.button("🔄 Mulai Ulang"):
+        if st.button("🔄 Balik lagi ke page paling awal?"):
             for key in list(st.session_state.keys()):
                 del st.session_state[key]
+            st.session_state.step = "intro"
             st.rerun()
 
 
@@ -1368,11 +1369,6 @@ def timestamp_WIB():
 def generate_case_id():
     return f"case_{datetime.now(pytz.timezone('Asia/Jakarta')).strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:6]}"
 
-
-
-
-
-
 # ==========================
 # Format data user untuk Google Sheets
 # ==========================
@@ -1392,33 +1388,6 @@ def format_data_for_gsheet(data_dict):
             formatted[k] = str(v)
     return formatted
 
-
-
-
-# ==========================
-# Kirim data user testing ke Google Sheets
-# ==========================
-# def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testing"):
-#     try:
-#         json_key = dict(st.secrets["gcp_service_account"])
-#         with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w") as tmp:
-#             json.dump(json_key, tmp)
-#             tmp_path = tmp.name
-
-#         gc = pygsheets.authorize(service_file=tmp_path)
-#         sh = gc.open_by_key(spreadsheet_id)
-#         wks = sh.worksheet_by_title(sheet_name)
-
-#         # Buat urutan kolom konsisten
-#         if isinstance(data_dict, dict):
-#             data_dict = {k: str(v) for k, v in data_dict.items()}
-#             wks.append_table(list(data_dict.values()), dimension='ROWS')
-#         else:
-#             raise ValueError("Data harus dalam format dictionary")
-
-#         return True, "✅ Data berhasil dikirim ke Google Sheets."
-#     except Exception as e:
-#         return False, f"❌ Gagal mengirim data ke Google Sheets: {e}"
 
 def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testing"):
     try:
