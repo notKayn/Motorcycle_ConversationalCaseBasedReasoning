@@ -1320,6 +1320,28 @@ def format_data_for_gsheet(data_dict):
 # ==========================
 # Kirim data user testing ke Google Sheets
 # ==========================
+# def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testing"):
+#     try:
+#         json_key = dict(st.secrets["gcp_service_account"])
+#         with tempfile.NamedTemporaryFile(delete=False, suffix=".json", mode="w") as tmp:
+#             json.dump(json_key, tmp)
+#             tmp_path = tmp.name
+
+#         gc = pygsheets.authorize(service_file=tmp_path)
+#         sh = gc.open_by_key(spreadsheet_id)
+#         wks = sh.worksheet_by_title(sheet_name)
+
+#         # Buat urutan kolom konsisten
+#         if isinstance(data_dict, dict):
+#             data_dict = {k: str(v) for k, v in data_dict.items()}
+#             wks.append_table(list(data_dict.values()), dimension='ROWS')
+#         else:
+#             raise ValueError("Data harus dalam format dictionary")
+
+#         return True, "✅ Data berhasil dikirim ke Google Sheets."
+#     except Exception as e:
+#         return False, f"❌ Gagal mengirim data ke Google Sheets: {e}"
+
 def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testing"):
     try:
         json_key = dict(st.secrets["gcp_service_account"])
@@ -1331,16 +1353,14 @@ def kirim_data_ke_gsheet(data_dict, spreadsheet_id, sheet_name="hasil_user_testi
         sh = gc.open_by_key(spreadsheet_id)
         wks = sh.worksheet_by_title(sheet_name)
 
-        # Buat urutan kolom konsisten
-        if isinstance(data_dict, dict):
-            data_dict = {k: str(v) for k, v in data_dict.items()}
-            wks.append_table(list(data_dict.values()), dimension='ROWS')
-        else:
-            raise ValueError("Data harus dalam format dictionary")
+        # FORMAT DULU
+        formatted_data = format_data_for_gsheet(data_dict)
 
+        wks.append_table(list(formatted_data.values()), dimension='ROWS')
         return True, "✅ Data berhasil dikirim ke Google Sheets."
     except Exception as e:
         return False, f"❌ Gagal mengirim data ke Google Sheets: {e}"
+
 
 
 # ==========================
