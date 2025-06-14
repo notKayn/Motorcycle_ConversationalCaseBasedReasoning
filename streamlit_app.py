@@ -400,9 +400,9 @@ def step_input():
     }
     
     engineconfig_label_map = {
-        "NearSquare": "Near square (performa linear)",
-        "Overbore": "Over bore (putaran tinggi)",
-        "Overstroke": "Over stroke (putaran rendah)"
+        "NearSquare": "Near square (Performa rata diseluruh rentang putaran mesin)",
+        "OverBore": "Over bore (Performa di putaran tinggi)",
+        "OverStroke": "Over stroke (Performa di putaran rendah)"
     }
 
     st.markdown("✅ Checklist atribut yang ingin kamu isi:")
