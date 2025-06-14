@@ -1262,13 +1262,22 @@ def step_finish_evaluation():
         st.success("✅ Hasil berhasil disimpan!")
         st.session_state.user_has_saved = True
 
-    # Tombol reset
     if st.session_state.user_has_saved == True:
         if st.button("🔄 Balik lagi ke page paling awal?"):
+            # Simpan step baru dulu sebelum hapus state lainnya
+            st.session_state.new_step = "intro"
+    
+            # Reset semua kecuali step
             for key in list(st.session_state.keys()):
-                del st.session_state[key]
-            st.session_state.step = "intro"
+                if key != "new_step":
+                    del st.session_state[key]
+    
+            # Assign step yang baru
+            st.session_state.step = st.session_state.new_step
+            del st.session_state["new_step"]
+    
             st.rerun()
+
 
 
 # =================== FUNGSI ASLI ===================
