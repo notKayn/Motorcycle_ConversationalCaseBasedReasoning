@@ -22,7 +22,7 @@ st.markdown("---")
 # =================== Variable Global ===================
 @st.cache_data
 def load_df():
-    df = pd.read_excel("data_motor_excel.xlsx")
+    df = pd.read_excel("data_motor_excel_update1.xlsx")
     for col in df.columns:
         if pd.api.types.is_string_dtype(df[col]):
             df[col] = df[col].astype(str)
@@ -30,7 +30,7 @@ def load_df():
 
 @st.cache_data
 def load_case_vector_df():
-    df = pd.read_pickle("case_vector_df.pkl")
+    df = pd.read_pickle("case_vector_df_update1.pkl")
     for col in df.columns:
         if pd.api.types.is_string_dtype(df[col]):
             df[col] = df[col].astype(str)
@@ -38,7 +38,7 @@ def load_case_vector_df():
 
 @st.cache_data
 def load_final_df():
-    df = pd.read_pickle("final_df.pkl")
+    df = pd.read_pickle("final_df_update1.pkl")
     for col in df.columns:
         if pd.api.types.is_string_dtype(df[col]):
             df[col] = df[col].astype(str)
