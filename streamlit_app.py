@@ -1046,7 +1046,7 @@ def step_survey_1():
     survey_answers = {}
 
     for key, text in statements.items():
-        survey_answers[key] = st.checkbox(f"✔️ {text}", key=f"survey1_{key}")
+        survey_answers[key] = st.checkbox(f"{text}", key=f"survey1_{key}")
 
     saran = st.text_area("📝 Saran / komentar tambahan (opsional)", key="survey1_saran")
     survey_answers["saran"] = saran
