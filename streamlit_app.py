@@ -239,6 +239,7 @@ def step_query_based():
         "SuperSportFairing": "Super sport fairing",
         "SuperSportNaked": "Super sport naked",
         "HyperSportFairing": "Hyper sport fairing",
+        "HyperSportNaked": "Hyper sport naked",
         "MiniBike": "Motor mini",
         "MiniNaked": "Motor naked mini",
         "Touring": "Touring"
@@ -447,6 +448,7 @@ def step_input():
         "SuperSportFairing": "Super sport fairing",
         "SuperSportNaked": "Super sport naked",
         "HyperSportFairing": "Hyper sport fairing",
+        "HyperSportNaked": "Hyper sport naked",
         "MiniBike": "Motor mini",
         "MiniNaked": "Motor naked mini",
         "Touring": "Touring"
