@@ -198,11 +198,10 @@ def step_query_based():
     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
 
     st.markdown("""
-    Masukkan spesifikasi motor yang kamu inginkan, sistem akan mencari motor yang **100% cocok** dengan semua preferensimu.
-
-    🔹 Semakin sedikit atribut yang kamu isi, semakin banyak kemungkinan hasil yang akan ditemukan.  
-    🔹 Semakin banyak atribut yang diisi, semakin spesifik model motor yang ditunjukan (kalau ada).  
-    ⚠️ Sistem akan mencari **kecocokan yang benar-benar persis**, jadi kalau kamu isi kapasitas mesin 150cc, mungkin tidak ditemukan karena data bisa jadi 149.6 atau 151.2 cc.
+    Sekarang, tolong masukkan spesifikasi motor yang kamu inginkan. Masukan sesuai dengan kemauanmu tanpa harus menebak motornya.
+ 
+    ⚠️ Sistem di **aplikasi 1** ini akan mencari **kecocokan yang benar-benar persis**. 
+    💡 Jadi kalau kamu isi kapasitas mesin **150 cc**, *mungkin* **tidak akan ditemukan** karena data bisa jadi **149.6** atau **151.2 cc**.
 
     Sistem ini **tidak mentoleransi perbedaan kecil**, jadi cocok digunakan untuk pencarian yang sangat spesifik.
     """)
@@ -531,7 +530,9 @@ def step_prioritas():
 
     st.markdown("""
         Disini, kamu masukin atribut/kriteria yang tadi kamu pilih sesuai dengan kebutuhan prioritas kamu.  
-        **Paling atas** itu **paling prioritas** yak.
+        
+        - **Paling atas** itu **paling prioritas** yak.
+        - **tolong isi semua kolomnya** agar tombol selanjutnya dapat muncul.
     """)
 
     label_mapping = {
@@ -583,7 +584,8 @@ def step_rekomendasi():
     st.markdown("""
         Disini, kamu akan mendapatkan hasil rekomendasi model motor yang paling mendekati dengan atribut/kriteria yang kamu sebutkan di awal.
         Untuk model motornya, kamu bisa klik/sentuh nama motornya untuk mengetahui spesfikasi motor tersebut.
-        Scroll sampai bawah ya, nanti ada umpan balik sederhana yang kamu harus isi.
+        
+        - **Scroll sampai bawah** ya, nanti ada umpan balik sederhana yang kamu harus isi.
     """)
 
     st.subheader("📌 Preferensi kamu:")
@@ -649,8 +651,8 @@ def step_rekomendasi():
 
 
 
-    st.subheader("📝 Feedback Rekomendasi Awal")
-    st.markdown("##### Apakah Anda puas dengan hasil Top-1 dari rekomendasi ini?")
+    st.subheader("📝 Apakah Anda puas dengan hasil Top-1 dari rekomendasi ini?")
+    # st.markdown("##### Apakah Anda puas dengan hasil Top-1 dari rekomendasi ini?")
 
     col1, col2 = st.columns(2)
     with col1:
@@ -673,7 +675,7 @@ def step_rekomendasi():
             st.rerun()
 
     with col2:
-        if st.button("❌ Tidak Puas"):
+        if st.button("❌ Tidak Puas / mau update jawaban"):
             st.session_state.puas_awal = "tidak"
 
     if st.session_state.get("puas_awal") == "tidak":
@@ -686,7 +688,8 @@ def step_rekomendasi():
         st.markdown("---")
         
         opsi_model = ["Tidak ada"] + list(hasil.iloc[1:6]["Model"]) + ["Saya ingin keluar saja"]
-        cocok_lain = st.radio("🎯 Adakah model lain yang mendekati preferensimu?", opsi_model, key="radio_cocok_lain")
+        st.markdown("##### 🎯 Adakah model lain yang mendekati preferensimu?")
+        cocok_lain = st.radio("", opsi_model, key="radio_cocok_lain")
 
 
         if cocok_lain in hasil.iloc[1:6]["Model"].values:
@@ -718,7 +721,7 @@ def step_rekomendasi():
 
         elif cocok_lain == "Saya ingin keluar saja":
             st.warning("🚪 Serius nih? kamu masih bisa refine loh...")
-            if st.button("Bodo amat, saya mau keluar!"):
+            if st.button("Pokoknya, saya mau keluar!"):
                 st.session_state.refine_base_model = hasil.iloc[0].to_dict()
                 st.session_state.step = "survey_1"
                 st.rerun()
@@ -791,7 +794,7 @@ def step_refinement():
         "HyperSportFairing": "Hyper sport fairing",
         "MiniBike": "Motor mini",
         "MiniNaked": "Motor naked mini",
-        "Touring": "Touring"
+        "Touring": "Touring modern"
     }
 
     transmission_label_map = {
@@ -1030,7 +1033,10 @@ def step_refinement_result():
 def step_survey_1():
     st.subheader("📋 Survei Pengalaman - Aplikasi Case-Based")
 
-    st.markdown("Silakan beri tanda centang (✔️) pada pernyataan yang kamu **setujui**, dan biarkan kosong jika **tidak setuju**.")
+    st.markdown("""
+    - Beri tanda centang (✔️) pada pernyataan yang kamu **setujui**, 
+    - biarkan kosong jika **tidak setuju**.
+    """)
 
     statements = {
         "prq_1": "Saya sangat menyukai motor yang saya pilih.",
@@ -1062,11 +1068,16 @@ def step_survey_1():
 def step_survey_2():
     st.subheader("⚖️ Survei Perbandingan Sistem")
 
-    st.markdown("Silakan pilih sistem rekomendasi yang kamu lebih sukai dan menurutmu lebih efektif:")
+    # st.markdown("Silakan pilih sistem rekomendasi yang kamu lebih sukai dan menurutmu lebih efektif:")
 
-    favorit = st.radio("Sistem mana yang paling kamu sukai?", ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"], key="fav_survey2")
+    st.markdown("Sistem mana yang paling kamu sukai secara keseluruhan?")
+    favorit = st.radio("", ["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"], key="fav_survey2")
+
+    st.markdown("Apakah ada alasannya kenapa kamu lebih suka sistem tersebut?")
     alasan = st.text_area("📝 Kenapa kamu lebih menyukai sistem tersebut?", key="alasan_survey2")
-    efektif = st.radio("Sistem mana yang menurutmu paling efektif membantu menemukan motor yang cocok?", ["Aplikasi 1 (Query-Based)", "Aplikasi 2 (Case-Based)"], key="eff_survey2")
+
+    st.markdown("Sistem mana yang menurutmu paling efektif membantu menemukan motor yang cocok?")
+    efektif = st.radio("", ["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"], key="eff_survey2")
 
     if st.button("✅ Selesai & Tampilkan Rangkuman"):
         st.session_state.survey_2_feedback = {
