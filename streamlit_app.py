@@ -1150,7 +1150,7 @@ def step_survey_2():
     # favorit = st.radio(label=None, ["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"], key="fav_survey2")
     favorit = st.radio(
         options=["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"],
-        label=None,
+        label="",
         key="fav_survey2"
     )
 
@@ -1160,7 +1160,7 @@ def step_survey_2():
     st.markdown("Sistem mana yang menurutmu paling efektif membantu menemukan motor yang cocok?")
     efektif = st.radio(
         options=["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"],
-        label=None, 
+        label="", 
         key="eff_survey2"
     )
 
