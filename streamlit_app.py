@@ -99,8 +99,8 @@ def step_identity():
     Inshallah, data anda akan dijaga dengan baik dan digunakan sebagaimana mestinya dengan bijak.
     """)
 
-    st.markdown("📝 Nama Lengkap")
-    nama = st.text_input("")
+    st.markdown("Isi namamu disini")
+    nama = st.text_input("**📝 Nama Lengkap**")
 
     st.markdown("🎂 Usia")
     usia = st.number_input("", min_value=10, max_value=100, step=1)
