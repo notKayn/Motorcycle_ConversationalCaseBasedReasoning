@@ -1158,7 +1158,11 @@ def step_survey_2():
     alasan = st.text_area("📝 Kenapa kamu lebih menyukai sistem tersebut?", key="alasan_survey2")
 
     st.markdown("Sistem mana yang menurutmu paling efektif membantu menemukan motor yang cocok?")
-    efektif = st.radio(label=None, ["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"], key="eff_survey2")
+    efektif = st.radio(
+        options=["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"],
+        label=None, 
+        key="eff_survey2"
+    )
 
     if st.button("✅ Selesai & Tampilkan Rangkuman"):
         st.session_state.survey_2_feedback = {
