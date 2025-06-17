@@ -99,24 +99,24 @@ def step_identity():
     Inshallah, data anda akan dijaga dengan baik dan digunakan sebagaimana mestinya dengan bijak.
     """)
 
-    st.markdown("Isi namamu disini")
+    # st.markdown("Isi namamu disini")
     nama = st.text_input("**📝 Nama Lengkap**")
 
-    st.markdown("🎂 Usia")
-    usia = st.number_input("", min_value=10, max_value=100, step=1)
+    # st.markdown("🎂 Usia")
+    usia = st.number_input("**🎂 Usia anda**", min_value=10, max_value=100, step=1)
 
-    st.markdown("⚧️ Jenis Kelamin")
-    gender = st.radio("", ["Laki-laki", "Perempuan"], horizontal=True)
+    # st.markdown("⚧️ Jenis Kelamin")
+    gender = st.radio("**Jenis Kelamin**", ["Laki-laki", "Perempuan"], horizontal=True)
 
-    st.markdown("📊 Seberapa paham kamu dengan spesifikasi motor?")
-    tingkat = st.selectbox("", [
+    # st.markdown("📊 Seberapa paham kamu dengan spesifikasi motor?")
+    tingkat = st.selectbox("**📊 Seberapa paham kamu dengan spesifikasi motor?**", [
         "1 - Saya hanya tahu secara umum.",
         "2 - Saya cukup mengerti bagian teknisnya."
     ])
 
     # Optional (boleh diaktifin kalau perlu)
-    st.markdown("📧 Email (opsional)")
-    email = st.text_input("", placeholder="Misalnya: kamu@gmail.com")
+    # st.markdown("📧 Email (opsional)")
+    email = st.text_input("**📧 Email (opsional)**", placeholder="Misalnya: kamu@gmail.com")
 
     if st.button("➡️ Lanjut ke Bagian Aplikasi 1"):
         if nama.strip() and usia:
@@ -393,7 +393,7 @@ def step_input():
     st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Case-Based")
 
     st.markdown("""
-    Sekarang, coba kamu masukan atribut/kriteria spesifikasi motor yang kamu inginkan di kolom yang tersedia di bawah.
+    Sekarang, coba kamu **pilih atribut/kriteria spesifikasi motor** yang kamu inginkan di kolom yang tersedia di bawah.
     """)
 
     st.markdown("---")
