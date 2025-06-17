@@ -1112,6 +1112,8 @@ def step_survey_1():
     - biarkan kosong jika **tidak setuju**.
     """)
 
+    st.markdown("---")
+
     statements = {
         "prq_1": "Saya sangat menyukai motor yang saya pilih.",
         "prq_2": "Saya tidak menyukai cara interaksi sistem ini.",  # ✘ negatif
