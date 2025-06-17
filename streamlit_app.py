@@ -586,11 +586,39 @@ def step_rekomendasi():
         - **Scroll sampai bawah** ya, nanti ada umpan balik sederhana yang kamu harus pilih.
     """)
 
-    st.subheader("📌 Preferensi kamu:")
-    st.json(st.session_state.user_input)
+    # st.subheader("📌 Preferensi kamu:")
+    # st.json(st.session_state.user_input)
 
-    st.subheader("🎯 Prioritas:")
-    st.json(st.session_state.prioritas_user)
+    # st.subheader("🎯 Prioritas:")
+    # st.json(st.session_state.prioritas_user)
+
+    label_mapping = {
+        "Category": "Kategori",
+        "Displacement": "Kapasitas Mesin",
+        "PowerHP": "Tenaga Maksimum",
+        "Brand": "Merek",
+        "Transmission": "Transmisi",
+        "ClutchType": "Jenis Kopling",
+        "EngineConfig": "Konfigurasi Mesin",
+        "FuelTank": "Kapasitas Tangki",
+        "WeightKG": "Berat Motor",
+        "FuelConsumptionKML": "Konsumsi BBM",
+        "Price": "Harga"
+    }
+    
+    # Pakai di preferensi
+    st.subheader("📌 Preferensi yang Kamu Masukkan:")
+    for key, value in st.session_state.user_input.items():
+        label = label_mapping.get(key, key)
+        st.markdown(f"- **{label}**: {value}")
+    
+    # Pakai juga di prioritas
+    st.subheader("🎯 Urutan Prioritas Atribut:")
+    prioritas_sorted = sorted(st.session_state.prioritas_user.items(), key=lambda x: -x[1])
+    for i, (attr, weight) in enumerate(prioritas_sorted, 1):
+        label = label_mapping.get(attr, attr)
+        st.markdown(f"{i}. **{label}** (bobot: {weight})")
+
 
      # ⏪ Cek case historis serupa
     populer_dari_case = hitung_model_terpopuler_dari_case_gsheet(
@@ -958,11 +986,39 @@ def step_refinement_result():
     iterasi = len(st.session_state.get("refine_steps", []))
     st.markdown(f"##### 📊 Total Iterasi Refinement: {iterasi}")
 
-    st.subheader("📌 Preferensi kamu:")
-    st.json(st.session_state.user_input)
+    # st.subheader("📌 Preferensi kamu:")
+    # st.json(st.session_state.user_input)
 
-    st.subheader("🎯 Prioritas:")
-    st.json(st.session_state.prioritas_user)
+    # st.subheader("🎯 Prioritas:")
+    # st.json(st.session_state.prioritas_user)
+
+    label_mapping = {
+        "Category": "Kategori",
+        "Displacement": "Kapasitas Mesin",
+        "PowerHP": "Tenaga Maksimum",
+        "Brand": "Merek",
+        "Transmission": "Transmisi",
+        "ClutchType": "Jenis Kopling",
+        "EngineConfig": "Konfigurasi Mesin",
+        "FuelTank": "Kapasitas Tangki",
+        "WeightKG": "Berat Motor",
+        "FuelConsumptionKML": "Konsumsi BBM",
+        "Price": "Harga"
+    }
+    
+    # Pakai di preferensi
+    st.subheader("📌 Preferensi yang Kamu Masukkan:")
+    for key, value in st.session_state.user_input.items():
+        label = label_mapping.get(key, key)
+        st.markdown(f"- **{label}**: {value}")
+    
+    # Pakai juga di prioritas
+    st.subheader("🎯 Urutan Prioritas Atribut:")
+    prioritas_sorted = sorted(st.session_state.prioritas_user.items(), key=lambda x: -x[1])
+    for i, (attr, weight) in enumerate(prioritas_sorted, 1):
+        label = label_mapping.get(attr, attr)
+        st.markdown(f"{i}. **{label}** (bobot: {weight})")
+
 
     hasil = st.session_state.get("last_refined_result", None)
 
@@ -1118,13 +1174,17 @@ def step_finish_evaluation():
 
     # Identitas
     st.subheader("👤 Identitas Pengguna")
-    st.json(st.session_state.get("user_identity", {}))
+    # st.json(st.session_state.get("user_identity", {}))
+    for k, v in st.session_state.get("user_input", {}).items():
+        st.markdown(f"- **{k}**: {v}")
 
     # Input & hasil query-based
     st.subheader("🔍 Aplikasi 1 - Query-Based")
     
     st.markdown("**Preferensi yang dimasukkan:**")
-    st.json(st.session_state.get("query_input", {}))
+    # st.json(st.session_state.get("query_input", {}))
+    for k, v in st.session_state.get("query_input", {}).items():
+        st.markdown(f"- **{k}**: {v}")
     
     st.markdown("**Hasil Rekomendasi:**")
     query_result = st.session_state.get("query_result", [])
@@ -1140,10 +1200,15 @@ def step_finish_evaluation():
     st.subheader("🤖 Aplikasi 2 - Case-Based")
 
     st.markdown("**Preferensi terakhir yang dimasukkan:**")
-    st.json(st.session_state.get("user_input", {}))
+    # st.json(st.session_state.get("user_input", {}))
+    for k, v in st.session_state.get("user_input", {}).items():
+        st.markdown(f"- **{k}**: {v}")
 
     st.markdown("**Prioritas Atribut terakhir:**")
-    st.json(st.session_state.get("prioritas_user", {}))
+    # st.json(st.session_state.get("prioritas_user", {}))
+    prioritas_urut = sorted(st.session_state.get("prioritas_user", {}).items(), key=lambda x: -x[1])
+    for i, (k, v) in enumerate(prioritas_urut, 1):
+        st.markdown(f"{i}. **{k}** (bobot: {v})")
 
     st.markdown("**Hasil Rekomendasi terakhir:**")
     if "final_chosen_model" in st.session_state: # historical/cosine top1/cosine top2-6
@@ -1177,12 +1242,47 @@ def step_finish_evaluation():
     # Survei 1
     st.subheader("📝 Feedback untuk Aplikasi Case-Based")
     with st.expander("Lihat jawaban survei 1:"):
-        st.json(st.session_state.get("survey_1_feedback", {}))
+        # st.json(st.session_state.get("survey_1_feedback", {}))
+        statements = {
+            "prq_1": "Saya sangat menyukai motor yang saya pilih.",
+            "prq_2": "Saya tidak menyukai cara interaksi sistem ini.",
+            "pe_1": "Saya bisa menemukan motor yang saya sukai dengan cepat.",
+            "tr_1": "Saya benar-benar akan mempertimbangkan membeli motor ini suatu saat nanti.",
+            "tr_2": "Saya tertarik untuk menggunakan sistem ini lagi bila ingin mencari motor.",
+            "inf_1": "Saya dapat dengan mudah menemukan informasi tentang motor.",
+            "etu_1": "Secara keseluruhan, saya kesulitan menemukan motor yang sesuai keinginan.",
+            "etu_2": "Saya tidak mengalami kesulitan dalam menggunakan sistem ini.",
+            "eou_1": "Pertanyaan dan pilihan yang diberikan mudah dipahami.",
+            "eou_2": "Saya sangat memahami semua pertanyaan yang diberikan kepada saya."
+        }
+        
+        feedback1 = st.session_state.get("survey_1_feedback", {})
+        
+        for k, v in feedback1.items():
+            if k == "saran":
+                st.markdown(f"✍️ **Saran tambahan:** {v if v.strip() else 'Tidak ada'}")
+            else:
+                label = statements.get(k, k)
+                tanda = "✔️" if v else "✘"
+                st.markdown(f"- {tanda} {label}")
 
     # Survei 2
     st.subheader("⚖️ Perbandingan Dua Sistem")
     with st.expander("Lihat jawaban survei 2:"):
-        st.json(st.session_state.get("survey_2_feedback", {}))
+        # st.json(st.session_state.get("survey_2_feedback", {}))
+        statements2 = {
+            "favorit": "Sistem rekomendasi mana yang paling kamu sukai?",
+            "alasan": "Apa alasan kamu memilih sistem tersebut?",
+            "efektivitas": "Menurut kamu, sistem mana yang lebih efektif?"
+        }
+    
+        feedback2 = st.session_state.get("survey_2_feedback", {})
+    
+        for k, v in feedback2.items():
+            label = statements2.get(k, k)
+            if not v or (isinstance(v, str) and v.strip() == ""):
+                v = "_Tidak diisi_"
+            st.markdown(f"- **{label}**: {v}")
 
     st.session_state.user_has_saved = False
     
