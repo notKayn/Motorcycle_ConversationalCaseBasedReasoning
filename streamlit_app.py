@@ -613,11 +613,11 @@ def step_rekomendasi():
         st.markdown(f"- **{label}**: {value}")
     
     # Pakai juga di prioritas
-    st.subheader("🎯 Urutan Prioritas Atribut:")
+    st.subheader("🎯 Urutan Prioritas Atribut (dari yang paling penting):")
     prioritas_sorted = sorted(st.session_state.prioritas_user.items(), key=lambda x: -x[1])
     for i, (attr, weight) in enumerate(prioritas_sorted, 1):
         label = label_mapping.get(attr, attr)
-        st.markdown(f"{i}. **{label}** (bobot: {weight})")
+        st.markdown(f"{i}. **{label}**")
 
 
      # ⏪ Cek case historis serupa
@@ -1013,11 +1013,11 @@ def step_refinement_result():
         st.markdown(f"- **{label}**: {value}")
     
     # Pakai juga di prioritas
-    st.subheader("🎯 Urutan Prioritas Atribut:")
+    st.subheader("🎯 Urutan Prioritas Atribut (dari yang paling penting):")
     prioritas_sorted = sorted(st.session_state.prioritas_user.items(), key=lambda x: -x[1])
     for i, (attr, weight) in enumerate(prioritas_sorted, 1):
         label = label_mapping.get(attr, attr)
-        st.markdown(f"{i}. **{label}** (bobot: {weight})")
+        st.markdown(f"{i}. **{label}**")
 
 
     hasil = st.session_state.get("last_refined_result", None)
