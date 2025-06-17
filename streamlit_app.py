@@ -1147,7 +1147,12 @@ def step_survey_2():
     # st.markdown("Silakan pilih sistem rekomendasi yang kamu lebih sukai dan menurutmu lebih efektif:")
 
     st.markdown("Sistem mana yang paling kamu sukai secara keseluruhan?")
-    favorit = st.radio(label=None, ["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"], key="fav_survey2")
+    # favorit = st.radio(label=None, ["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"], key="fav_survey2")
+    favorit = st.radio(
+        options=["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"],
+        label=None,
+        key="fav_survey2"
+    )
 
     st.markdown("Apakah ada alasannya kenapa kamu lebih suka sistem tersebut?")
     alasan = st.text_area("📝 Kenapa kamu lebih menyukai sistem tersebut?", key="alasan_survey2")
