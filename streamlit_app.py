@@ -82,7 +82,7 @@ def step_intro():
     4.    Mengisi survey (ada 2 tahap)
     5.    Kesimpulan
     
-    Untuk lebih lanjutnya, akan dijelaskan di setiap halaman.
+    Untuk lebih lanjutnya, akan dijelaskan di setiap halaman.  \n
     Klik/sentuh tombol "Mulai" untuk menuju ke bagian selanjutnya.
 
     Klik tombol di bawah ini untuk memulai.
