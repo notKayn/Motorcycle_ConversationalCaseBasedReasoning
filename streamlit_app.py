@@ -96,20 +96,28 @@ def step_identity():
     st.title("🧍 Identitas Peserta Uji Coba")
 
     st.markdown("""
-    Untuk memastikan hasil survei ini valid dan bisa dipertanggungjawabkan, silakan isi data identitas singkat berikut.
+    Hai! Kenalan dulu yuk sebelum kita cobain aplikasinya. Identitas diperlukan untuk keperluan survey anda nanti yang akan diisi di akhir test ini.
+    Inshallah, data anda akan dijaga dengan baik dan digunakan sebagaimana mestinya dengan bijak.
     """)
 
-    nama = st.text_input("📝 Nama Lengkap")
-    usia = st.number_input("🎂 Usia", min_value=10, max_value=100, step=1)
-    gender = st.radio("⚧️ Jenis Kelamin", ["Laki-laki", "Perempuan"], horizontal=True)
+    st.markdown("📝 Nama Lengkap")
+    nama = st.text_input("")
 
-    tingkat = st.selectbox("📊 Seberapa paham kamu dengan spesifikasi motor?", [
+    st.markdown("🎂 Usia")
+    usia = st.number_input("", min_value=10, max_value=100, step=1)
+
+    st.markdown("⚧️ Jenis Kelamin")
+    gender = st.radio("", ["Laki-laki", "Perempuan"], horizontal=True)
+
+    st.markdown("📊 Seberapa paham kamu dengan spesifikasi motor?")
+    tingkat = st.selectbox("", [
         "1 - Saya hanya tahu secara umum.",
         "2 - Saya cukup mengerti bagian teknisnya."
     ])
 
     # Optional (boleh diaktifin kalau perlu)
-    email = st.text_input("📧 Email (opsional)", placeholder="Misalnya: kamu@gmail.com")
+    st.markdown("📧 Email (opsional)")
+    email = st.text_input("", placeholder="Misalnya: kamu@gmail.com")
 
     if st.button("➡️ Lanjut ke Bagian Aplikasi 1"):
         if nama.strip() and usia:
@@ -130,18 +138,16 @@ def step_intro_query_based():
     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
 
     st.markdown("""
-    Seperti yang yang dijelaskan di awal, aplikasi ini hanya memberikan rekomendasi motor sangat spesifik dengan apa yang kamu sebutkan. 
-    Cara kerja dari aplikasi 1, simplenya gini:
-    - kamu pasang atribut A, sistem akan kasih kamu semua motor yang memiliki atribut A bersama dengan atribut motor lainnya
-    - kamu pasang atribut A dan B, sistem akan kasih kamu semua motor yang memilki atribut A dan B bersama dengan atribut motor lainnya juga.
-    - kamu pasang atribut A, B, C, D, dan E, sistem akan tetap mencari motor yang memiliki atribut dan menunjukkannya ***bila ditemukan***.
-    
-    Jadi, kalau kamu menyebutkan:
-    - atribut/kriteria motor yang terlalu umum atau sedikit yang digunakan, kemungkinan besar sistem akan memberikan rekomendasi yang terlalu umum juga.
-    - atribut/kriteria motor yang terlalu spesifik atau tidak sesuai dengan spesifikasi umum model motor di atas kertas, ada kemungkinan sistem
-    tidak bisa memberikan rekomendasi data model motor yang kamu cari.
+    Oke, sekarang kita kenalan dulu dengan cara kerja aplikasi 1:
+    - Aplikasi ini menggunakan konsep **menyaring data motor** yang disimpan pada sistem **sesuai dengan keinginan pengguna**
+    - Aplikasi ini menunjukkan hasil data motor **sama persis** dengan apa yang anda mau.
 
-    Intinya, aplikasi ini memberikan model motor apa adanya sesuai dengan yang kamu sebut di awal.
+    Namun, ada hal yang harus anda ketahui:
+    - Aplikasi ini sangat sensitif dengan spesifikasi keinginanmu.
+    - Beberapa data teknikal motor pada sistem kemungkinan besar tidak sama dengan apa yang anda sebutkan,
+        - karena data spesifikasi motor seperti kapasitas mesin bukanlah **150 cc**, tapi bisa jadi **149,8 cc** atau **151,2 cc**
+    - Ada kemungkinan aplikasi tidak menunjukan rekomendasi apapun karena tidak ditemukan data yang sesuai.
+    
     """)
 
     st.markdown("""
@@ -155,12 +161,12 @@ def step_intro_query_based():
 
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("Saya sudah paham"):
+        if st.button("💡 Saya sudah paham"):
             st.session_state.step = "query_based"
             st.rerun()
 
     with col2:
-        if st.button("Belum paham nih..."):
+        if st.button("😅 Belum paham nih"):
             st.session_state.step = "intro_query_for_dummies"
             st.rerun()
 
@@ -169,15 +175,18 @@ def step_intro_query_for_dummies():
     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
 
     st.markdown("""
-    Jadi gini loh...
-    1. Kamu masukan atribut spesifikasi motor yang kamu mau.
-    2. Sistem akan cariin motor sesuai atribut spesifikasi motor sesuai yang kamu sebut.
+    Oke, kita jelaskan lebih simpelnya lagi dengan contoh:
+    1. Anda memasukan atribut/kriteria motor yang anda ingin.
+    2. Sistem akan carikan motor yang sesuai dengan yang anda sebutkan dengan cara menyaring data di sistem
+    3. Sistem akan menampilkan motor yang memiliki atribut/kriteria yang **sama persis** dengan yang disebutkan di awal.
 
-    Inti dari aplikasi 1 sebenarnya hanya sesimple itu, tapi ada hal yang harus kamu tau:
-    1. Sistem ini sangat ketat dengan apa yang kamu sebut. Semakin umum maka akan semakin umum atau banyak motor yang muncul, pula sebaliknya.
-    2. Kalau sistem tidak bisa menemukan motor sesuai dengan yang kamu sebut, kemungkinannya ada 2:
-        - Tidak ada model motor yang sesuai dengan spesifikasi yang kamu sebutkan, atau
-        - Spesifikasi motor asli motor tidak sesuai dengan yang kamu sebut, misal kamu sebut 150cc tapi ternyata spesifikasi aslinya 149,7cc atau 151,2cc.
+    Tapi, ada hal yang jadi menjadi pertimbangan:
+    - Apa yang anda sebut di awal, bisa jadi terlalu spesifik/tidak umum.
+        - Sistem akan tetap mencari motor yang sesuai dengan keinginan anda,
+        - tetapi terdapat kemungkinan data tidak ditemukan karena terlalu spesifik, 
+        - atau mungkin saja tidak ada model motor sesuai keinginan anda yang di jual di pasaran.
+
+    Diasumsikan anda sudah lebih paham, sekarang mari kita lanjut untuk mencoba aplikasinya.
     """)
     
     st.markdown("""
@@ -196,14 +205,10 @@ def step_query_based():
     st.subheader("🔍 Aplikasi 1: Sistem Rekomendasi Query-Based")
 
     st.markdown("""
-    Sekarang, tolong masukkan spesifikasi motor yang kamu inginkan. Masukan sesuai dengan kemauanmu tanpa harus menebak motornya.
- 
-    ⚠️ Sistem di **aplikasi 1** ini akan mencari **kecocokan yang benar-benar persis**. 
-    💡 Jadi kalau kamu isi kapasitas mesin **150 cc**, *mungkin* **tidak akan ditemukan** karena data bisa jadi **149.6** atau **151.2 cc**.
-
-    Sistem ini **tidak mentoleransi perbedaan kecil**, jadi cocok digunakan untuk pencarian yang sangat spesifik.
+    Silakan anda **isi atribut/kriteria** dari spesifikasi motor **yang anda inginkan**.
+    Hasil akan muncul di bawah setelah anda menekan tombol "Cari motor yang cocok".
     """)
-
+    
     st.markdown("---")
 
     # Label mapping untuk tampilan UI
@@ -327,15 +332,21 @@ def step_intro_CRSCBR():
     st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Conversational Case-Based Reasoning")
 
     st.markdown("""
-    Sistem rekomendasi ini menggunakan pendekatan **Conversational Case-based Reasoning**, 
-    dimana user mendapat rekomendasi berdasarkan pengalaman pengguna lain yang memiliki preferensi serupa sebagai solusi rekomendasi utama.
-    Namun, bila tidak ditemukan rekam pengalaman yang serupa dengan kriteriamu, sistem akan menyesuaikan agar preferensimu dihitung dan dicocokan
-    dengan model motor yang paling mirip. Aplikasi 2 juga menyediakan opsi update atribut/kriteria spesifikasi motor yang kamu cari 
-    bila hasil rekomendasi belum memuaskan.
+    Di aplikasi ke-2 ini, konsepnya seperti ini:
+    - Menggunakan atribut/kriteria motor yang anda sebutkan sebagai target utama.
+    - **Bila ditemukan riwayat** atribut/kriteria motor yang sama dari pengguna lain:
+        - Sistem akan **menampilkan motor yang pengguna lain sarankan**.
+    - Bila **tidak ditemukan riwayat** atribut yang sama:
+        - maka sistem akan mencarikan motor yang sama persis/mirip dengan keinginan anda.
+    - Bila hasil rekomendasi **memuaskan**: 
+        - **atribut/kriteria anda** akan **disimpan untuk pengguna lain di lain waktu** jika mencari hal yang sama.
+    - Bila hasil rekomendasi **belum memuaskan**:
+        - Anda **dapat memperbaharui/update atribut/kriteria** agar **menghasilkan motor yang lebih sesuai**.
 
-    - Jika tidak ada rekam jejak pengguna lain dengan preferensi yang sama, sistem akan menghitung kemiripan secara otomatis.
-    - Bila hasil rekomendasi belum memenuhi preferensi kamu, kamu bisa melakukan *refinement* atau *update* untuk memperbaiki 
-    hasil rekomendasi agar lebih sesuai dengan keinginanmu.
+
+    Ada beberapa hal yang perlu anda ketahui:
+    - Hasil rekomendasi **mungkin sama persis atau mendekati** dengan yang anda inginkan.
+    - Bila hasil rekomendasi meleset sedikit atau jauh, berarti data motor yang tersedia di sistem hanya tersedia sedikit atau mungkin tidak ada sama sekali.
     """)
 
     st.markdown("---")
@@ -360,23 +371,12 @@ def step_intro_CRSCBR_for_dummies():
     st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Conversational Case-Based Reasoning")
 
     st.markdown("""
-    Sekali lagi nih aku jelasin:
-    1. Sistem bakal cariin kamu motor lewat perpustakaan data pengalaman user lain yang sesuai dengan atribut/kriteria dan 
-    urutan prioritas atribut/kriteria yang kamu sebutin.
-    2. Fungsi urutan prioritas disini adalah agar hasil rekomendasi motor lebih sesuai dengan ekspektasi prioritas.
-        - misal kamu pasang atribut kapasitas mesin 250cc dan kategori motor sport fairing:
-            - Kalo kamu pasang **kapasitas mesin** di **prioritas 1**, ada kemungkinan kamu direkomendasikan motor dengan kapasitas yang dekat dari 250cc
-    terlebih dahulu tapi tidak selalu sport fairing sebagai diurutan yang paling atas
-            - Kalo kamu pasang **kategori motor** di **prioritas 1**, ada kemungkinan kamu direkomendasikan motor dengan kategori motor sport fairing 
-    terlebih dahulu tapi tidak selalu memiliki kapasitas 250cc.
-            - Hal tersebut mungkin terjadi karena keterbatasan dataset, mohon dimengerti 🙏
-    3. Kalo target model motor dengan atribut/kriteria yang kamu sebutin tidak pernah ditemukan oleh user lain, sistem otomatis cariin kamu 
-    model motor yang paling mirip dengan cara perhitungan khususnya.
-
-    Ada hal yang harus diketahui, ada satu momen dimana kamu mencari model motor dengan atribut/kriteria spesifikasi namun hasil dari 
-    rekomendasinya meleset sedikit atau cukup jauh. Ada beberapa penyebab:
-    - Kamu salah memasang urutan prioritas atribut/kriteria yang kamu cari, atau
-    - Model motor yang kamu cari memang tidak tersedia di pasaran. 
+    Okeh, akan dijelaskan menggunakan contoh penggunaan aplikasi ke-2:
+    1. Anda **masukan atribut/kriteria motor** yang anda inginkan (lagi).
+    2. Anda juga diminta **masukan urutan prioritas** dari atribut/kriteria yang akan dicari.
+        - Fungsi dari prioritas ini adalah untuk memberikan rekomendasi yang lebih personal, sesuai dengan kebutuhan anda.
+    3. Hasil rekomendasi akan muncul, dan anda **dapat memperbaharui/update** dari hasil rekomendasi jika belum sesuai.
+    4. Jika sudah sesuai, anda bisa menyimpan data atribut/kriteria motor anda agar pengguna lain bisa dapat referensi dari anda.
     """)
 
     st.markdown("---")
@@ -527,9 +527,9 @@ def step_prioritas():
     st.subheader("🎯 Langkah 2: Tentukan Prioritas Atribut")
 
     st.markdown("""
-        Disini, kamu masukin atribut/kriteria yang tadi kamu pilih sesuai dengan kebutuhan prioritas kamu.  
+        Disini, anda masukin atribut/kriteria yang tadi anda pilih sesuai dengan kebutuhan prioritas anda.  
         
-        - **Paling atas** itu **paling prioritas** yak.
+        - **Paling atas** itu **paling prioritas** ya.
         - **tolong isi semua kolomnya** agar tombol selanjutnya dapat muncul.
     """)
 
@@ -555,7 +555,7 @@ def step_prioritas():
     prioritas = {}
     used = []
 
-    st.markdown("Urutkan atribut yang paling kamu utamakan (1 = paling penting):")
+    st.markdown("Urutkan atribut yang paling kamu utamakan (#1 = paling penting):")
 
     for i in range(urutan):
         sisa_opsi = [a for a in selected_attrs if a not in used]
@@ -583,7 +583,7 @@ def step_rekomendasi():
         Disini, kamu akan mendapatkan hasil rekomendasi model motor yang paling mendekati dengan atribut/kriteria yang kamu sebutkan di awal.
         Untuk model motornya, kamu bisa klik/sentuh nama motornya untuk mengetahui spesfikasi motor tersebut.
         
-        - **Scroll sampai bawah** ya, nanti ada umpan balik sederhana yang kamu harus isi.
+        - **Scroll sampai bawah** ya, nanti ada umpan balik sederhana yang kamu harus pilih.
     """)
 
     st.subheader("📌 Preferensi kamu:")
@@ -727,6 +727,11 @@ def step_rekomendasi():
 
 def step_refinement():
     st.subheader("🔧 Langkah 4: Refinement Interaktif")
+
+    st.markdown("""
+        Disini, anda masukan atribut/kriteria yang ingin diperbaharui.
+        Anda juga bisa menambahkan atribut/kriteria tambahan jika perlu.
+    """)
 
     iterasi = len(st.session_state.get("refine_steps", [])) + 1
     st.markdown(f"##### 🔁 Refinement Iterasi ke-{iterasi}")
@@ -887,6 +892,11 @@ def step_refinement():
 def step_refine_prioritas():
     st.subheader("🎯 Langkah 5: Mengurutkan Prioritas Atribut Refinement")
 
+    st.markdown("""
+        Disini, anda juga tetap diminta urutan prioritas dari atribut/kriteria yang anda sudah pilih.
+        Pastikan diisi semuanya ya.
+    """)
+
     label_mapping = {
         "Brand": "Merek",
         "Category": "Kategori",
@@ -939,6 +949,11 @@ def step_refine_prioritas():
 def step_refinement_result():
     
     st.subheader("✅ Langkah 6: Hasil Rekomendasi Setelah Refinement")
+
+    st.markdown("""
+        Disini adalah hasil rekomendasi yang telah diperbaharui dari yang anda pilih sebelumnya.
+        Kalau masih mau melakukan pembaharuan, silakan pilih "Hasil belum puas".
+    """)
 
     iterasi = len(st.session_state.get("refine_steps", []))
     st.markdown(f"##### 📊 Total Iterasi Refinement: {iterasi}")
@@ -1029,9 +1044,14 @@ def step_refinement_result():
                 st.rerun()
 
 def step_survey_1():
-    st.subheader("📋 Survei Pengalaman - Aplikasi Case-Based")
+    st.subheader("📋 Survei Pengalaman - Aplikasi ke-2")
 
     st.markdown("""
+    Ini ada survey untuk pengalaman dari aplikasi ke-2.
+    Jika lupa, aplikasi ke-2 adalah:
+    - Sistem carikan anda motor **yang sama persis/mendekati** dengan yang anda sebutkan.
+    - Sistem yang **menggunakan atribut/kriteria**** motor dengan **urutan prioritas**.
+    
     - Beri tanda centang (✔️) pada pernyataan yang kamu **setujui**, 
     - biarkan kosong jika **tidak setuju**.
     """)
