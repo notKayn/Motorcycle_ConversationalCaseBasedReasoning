@@ -75,17 +75,15 @@ def step_intro():
     st.markdown("""
     Halo! 👋 Terima kasih sudah bersedia ikut uji coba kecil ini.
 
-    Ini adalah sebuah aplikasi berbentuk web sederhana yang akan menghasilkan rekomendasi motor sesuai dengan kriteria yang kamu inginkan.
-    Disini, dilakukan 2 tes aplikasi: 
-
-    - 📋 **Aplikasi 1**: Query-based — Aplikasi ini mecari model motor sangat spesifik dengan atribut/kriteria yang kamu sebut. Semakin spesifik yang kamu sebut, 
-    maka semakin sulit ketersediaan model yang kamu cari.
-
-    - 🔍 **Aplikasi 2**: Conversational Case-based Reasoning — Mirip dengan aplikasi 1, tetapi aplikasi ini menggunakan perhitungan khusus untuk
-    atribut yang kamu sebut. Aplikasi ini akan memberikan model motor yang paling mirip dengan apa yang kamu sebut di awal, walau diisi dengan atribut yang
-    memiliki kemungkinan tidak ditemukan model yang paling cocok sekalipun.
+    Secara garis besar, kamu akan melewati beberapa hal:
+    1.    Mengisi identitas diri
+    2.    Mencoba aplikasi 1
+    3.    Mencoba aplikasi 2
+    4.    Mengisi survey (ada 2 tahap)
+    5.    Kesimpulan
     
-    Kamu akan mencoba kedua aplikasi ini secara bergantian, dan memberikan penilaian untuk masing-masing aplikasi berbentuk survei.
+    Untuk lebih lanjutnya, akan dijelaskan di setiap halaman.
+    Klik/sentuh tombol "Mulai" untuk menuju ke bagian selanjutnya.
 
     Klik tombol di bawah ini untuk memulai.
     """)
