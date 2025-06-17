@@ -205,6 +205,7 @@ def step_query_based():
 
     st.markdown("""
     Silakan anda **isi atribut/kriteria** dari spesifikasi motor **yang anda inginkan**.
+    
     Hasil akan muncul di bawah setelah anda menekan tombol "Cari motor yang cocok".
     """)
     
