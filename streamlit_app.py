@@ -1097,10 +1097,52 @@ def step_refinement_result():
         elif pilih_lain == "Saya ingin keluar saja":
             st.warning("🚪 Proses dihentikan akan dihentikan dan rekomendasi tidak disimpan ke kamus. Yakin?")
             if st.button("Keluar & Akhiri"):
-                st.session_state.step = "survey_1"
+                st.session_state.step = "survey_1_app1"
                 st.rerun()
 
-def step_survey_1():
+def step_survey_1_app1():
+    st.subheader("📋 Survei Pengalaman - Aplikasi ke-2")
+
+    st.markdown("""
+    Ini ada survey untuk pengalaman dari aplikasi ke-1.
+    Jika lupa, aplikasi ke-1 adalah:
+    - Sistem carikan anda motor **yang sama persis/mendekati** dengan yang anda sebutkan.
+    - Sistem yang **menggunakan atribut/kriteria** motor dengan **urutan prioritas**.
+
+    
+    - Beri tanda centang (✔️) pada pernyataan yang kamu **setujui**, 
+    - biarkan kosong jika **tidak setuju**.
+    """)
+
+    st.markdown("---")
+
+    statements = {
+        "prq_1": "Saya sangat menyukai motor yang saya pilih.",
+        "prq_2": "Saya tidak menyukai cara interaksi sistem ini.",  # ✘ negatif
+        "pe_1": "Saya bisa menemukan motor yang saya sukai dengan cepat.",
+        "tr_1": "Saya benar-benar akan mempertimbangkan membeli motor ini suatu saat nanti.",
+        "tr_2": "Saya tertarik untuk menggunakan sistem ini lagi bila ingin mencari motor.",
+        "inf_1": "Saya dapat dengan mudah menemukan informasi tentang motor.",
+        "etu_1": "Secara keseluruhan, saya kesulitan menemukan motor yang sesuai keinginan.",  # ✘ negatif
+        "etu_2": "Saya tidak mengalami kesulitan dalam menggunakan sistem ini.",
+        "eou_1": "Pertanyaan dan pilihan yang diberikan mudah dipahami.",
+        "eou_2": "Saya sangat memahami semua pertanyaan yang diberikan kepada saya."
+    }
+
+    survey_answers_app1 = {}
+
+    for key, text in statements.items():
+        survey_answers[key] = st.checkbox(f"{text}", key=f"survey1_{key}")
+
+    saran = st.text_area("📝 Saran / komentar tambahan (opsional)", key="survey1_saran")
+    survey_answers_app1["saran"] = saran
+
+    if st.button("➡️ Lanjut ke Survei 2"):
+        st.session_state.survey_1_app1_feedback = survey_answers_app1
+        st.session_state.step = "survey_1_app2"
+        st.rerun()
+
+def step_survey_1_app2():
     st.subheader("📋 Survei Pengalaman - Aplikasi ke-2")
 
     st.markdown("""
@@ -1129,16 +1171,16 @@ def step_survey_1():
         "eou_2": "Saya sangat memahami semua pertanyaan yang diberikan kepada saya."
     }
 
-    survey_answers = {}
+    survey_answers_app2 = {}
 
     for key, text in statements.items():
         survey_answers[key] = st.checkbox(f"{text}", key=f"survey1_{key}")
 
     saran = st.text_area("📝 Saran / komentar tambahan (opsional)", key="survey1_saran")
-    survey_answers["saran"] = saran
+    survey_answers_app2["saran"] = saran
 
     if st.button("➡️ Lanjut ke Survei 2"):
-        st.session_state.survey_1_feedback = survey_answers
+        st.session_state.survey_1_app2_feedback = survey_answers_app2
         st.session_state.step = "survey_2"
         st.rerun()
 
@@ -1146,10 +1188,8 @@ def step_survey_1():
 def step_survey_2():
     st.subheader("⚖️ Survei Perbandingan Sistem")
 
-    # st.markdown("Silakan pilih sistem rekomendasi yang kamu lebih sukai dan menurutmu lebih efektif:")
 
     st.markdown("Sistem mana yang paling kamu sukai secara keseluruhan?")
-    # favorit = st.radio(label=None, ["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"], key="fav_survey2")
     favorit = st.radio(
         options=["Aplikasi 2 (Case-Based + prioritas)", "Aplikasi 1 (Query-Based)"],
         label="",
@@ -1251,11 +1291,10 @@ def step_finish_evaluation():
                 st.markdown(f"**Iterasi {i}:**")
                 st.write(step)
 
-
-    # Survei 1
-    st.subheader("📝 Feedback untuk Aplikasi Case-Based")
-    with st.expander("Lihat jawaban survei 1:"):
-        # st.json(st.session_state.get("survey_1_feedback", {}))
+    
+    # survey 1 app 1
+    st.subheader("📝 Feedback untuk Aplikasi Query Based")
+    with st.expander("Lihat jawaban survei 1 (aplikasi 1: query based):"):
         statements = {
             "prq_1": "Saya sangat menyukai motor yang saya pilih.",
             "prq_2": "Saya tidak menyukai cara interaksi sistem ini.",
@@ -1269,7 +1308,33 @@ def step_finish_evaluation():
             "eou_2": "Saya sangat memahami semua pertanyaan yang diberikan kepada saya."
         }
         
-        feedback1 = st.session_state.get("survey_1_feedback", {})
+        feedback1 = st.session_state.get("survey_1_app1_feedback", {})
+        
+        for k, v in feedback1.items():
+            if k == "saran":
+                st.markdown(f"✍️ **Saran tambahan:** {v if v.strip() else 'Tidak ada'}")
+            else:
+                label = statements.get(k, k)
+                tanda = "✔️" if v else "✘"
+                st.markdown(f"- {tanda} {label}")
+    
+    # Survei 1 app 2
+    st.subheader("📝 Feedback untuk Aplikasi Case-Based")
+    with st.expander("Lihat jawaban survei 1 (aplikasi 2: case-based):"):
+        statements = {
+            "prq_1": "Saya sangat menyukai motor yang saya pilih.",
+            "prq_2": "Saya tidak menyukai cara interaksi sistem ini.",
+            "pe_1": "Saya bisa menemukan motor yang saya sukai dengan cepat.",
+            "tr_1": "Saya benar-benar akan mempertimbangkan membeli motor ini suatu saat nanti.",
+            "tr_2": "Saya tertarik untuk menggunakan sistem ini lagi bila ingin mencari motor.",
+            "inf_1": "Saya dapat dengan mudah menemukan informasi tentang motor.",
+            "etu_1": "Secara keseluruhan, saya kesulitan menemukan motor yang sesuai keinginan.",
+            "etu_2": "Saya tidak mengalami kesulitan dalam menggunakan sistem ini.",
+            "eou_1": "Pertanyaan dan pilihan yang diberikan mudah dipahami.",
+            "eou_2": "Saya sangat memahami semua pertanyaan yang diberikan kepada saya."
+        }
+        
+        feedback1 = st.session_state.get("survey_1_app2_feedback", {})
         
         for k, v in feedback1.items():
             if k == "saran":
@@ -1309,7 +1374,8 @@ def step_finish_evaluation():
             "prioritas_user": st.session_state.get("prioritas_user"),
             "final_CRSCBR_answer": st.session_state.get("final_CRSCBR_answer"),
             "refine_steps": st.session_state.get("refine_steps", []),
-            "survey_1_feedback": st.session_state.get("survey_1_feedback"),
+            "survey_1_app1_feedback": st.session_state.get("survey_1_app1_feedback"),
+            "survey_1_app2_feedback": st.session_state.get("survey_1_app2_feedback"),
             "survey_2_feedback": st.session_state.get("survey_2_feedback"),
             "timestamp": timestamp_WIB(),
             "case_id": generate_case_id()
@@ -1669,8 +1735,10 @@ elif st.session_state.step == "refine_prioritas":
     step_refine_prioritas()
 elif st.session_state.step == "refinement_result":
     step_refinement_result()
-elif st.session_state.step == "survey_1":
-    step_survey_1()
+elif st.session_state.step == "survey_1_app1":
+    step_survey_1_app1()
+elif st.session_state.step == "survey_1_app2":
+    step_survey_1_app2()
 elif st.session_state.step == "survey_2":
     step_survey_2()
 elif st.session_state.step == "finish":
