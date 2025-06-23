@@ -1083,7 +1083,7 @@ def step_refinement_result():
         elif pilih_lain == "Saya ingin keluar saja":
             st.warning("🚪 Proses dihentikan akan dihentikan dan rekomendasi tidak disimpan ke kamus. Yakin?")
             if st.button("Keluar & Akhiri"):
-                st.session_state.step = "survey_1_app1"
+                st.session_state.step = "survey_1_app2"
                 st.rerun()
 
 def step_survey_1_app1():
@@ -1284,31 +1284,31 @@ def step_finish_evaluation():
                 st.write(step)
 
     
-    # survey 1 app 1
-    st.subheader("📝 Feedback untuk Aplikasi Query Based")
-    with st.expander("Lihat jawaban survei 1 (aplikasi 1: query based):"):
-        statements = {
-            "prq_1": "Saya sangat menyukai motor yang saya pilih.",
-            "prq_2": "Saya tidak menyukai cara interaksi sistem ini.",
-            "pe_1": "Saya bisa menemukan motor yang saya sukai dengan cepat.",
-            "tr_1": "Saya benar-benar akan mempertimbangkan membeli motor ini suatu saat nanti.",
-            "tr_2": "Saya tertarik untuk menggunakan sistem ini lagi bila ingin mencari motor.",
-            "inf_1": "Saya dapat dengan mudah menemukan informasi tentang motor.",
-            "etu_1": "Secara keseluruhan, saya kesulitan menemukan motor yang sesuai keinginan.",
-            "etu_2": "Saya tidak mengalami kesulitan dalam menggunakan sistem ini.",
-            "eou_1": "Pertanyaan dan pilihan yang diberikan mudah dipahami.",
-            "eou_2": "Saya sangat memahami semua pertanyaan yang diberikan kepada saya."
-        }
+    # # survey 1 app 1
+    # st.subheader("📝 Feedback untuk Aplikasi Query Based")
+    # with st.expander("Lihat jawaban survei 1 (aplikasi 1: query based):"):
+    #     statements = {
+    #         "prq_1": "Saya sangat menyukai motor yang saya pilih.",
+    #         "prq_2": "Saya tidak menyukai cara interaksi sistem ini.",
+    #         "pe_1": "Saya bisa menemukan motor yang saya sukai dengan cepat.",
+    #         "tr_1": "Saya benar-benar akan mempertimbangkan membeli motor ini suatu saat nanti.",
+    #         "tr_2": "Saya tertarik untuk menggunakan sistem ini lagi bila ingin mencari motor.",
+    #         "inf_1": "Saya dapat dengan mudah menemukan informasi tentang motor.",
+    #         "etu_1": "Secara keseluruhan, saya kesulitan menemukan motor yang sesuai keinginan.",
+    #         "etu_2": "Saya tidak mengalami kesulitan dalam menggunakan sistem ini.",
+    #         "eou_1": "Pertanyaan dan pilihan yang diberikan mudah dipahami.",
+    #         "eou_2": "Saya sangat memahami semua pertanyaan yang diberikan kepada saya."
+    #     }
         
-        feedback1 = st.session_state.get("survey_1_app1_feedback", {})
+    #     feedback1 = st.session_state.get("survey_1_app1_feedback", {})
         
-        for k, v in feedback1.items():
-            if k == "saran":
-                st.markdown(f"✍️ **Saran tambahan:** {v if v.strip() else 'Tidak ada'}")
-            else:
-                label = statements.get(k, k)
-                tanda = "✔️" if v else "✘"
-                st.markdown(f"- {tanda} {label}")
+    #     for k, v in feedback1.items():
+    #         if k == "saran":
+    #             st.markdown(f"✍️ **Saran tambahan:** {v if v.strip() else 'Tidak ada'}")
+    #         else:
+    #             label = statements.get(k, k)
+    #             tanda = "✔️" if v else "✘"
+    #             st.markdown(f"- {tanda} {label}")
     
     # Survei 1 app 2
     st.subheader("📝 Feedback untuk Aplikasi Case-Based")
@@ -1366,7 +1366,7 @@ def step_finish_evaluation():
             "prioritas_user": st.session_state.get("prioritas_user"),
             "final_CRSCBR_answer": st.session_state.get("final_CRSCBR_answer"),
             "refine_steps": st.session_state.get("refine_steps", []),
-            "survey_1_app1_feedback": st.session_state.get("survey_1_app1_feedback"),
+            # "survey_1_app1_feedback": st.session_state.get("survey_1_app1_feedback"),
             "survey_1_app2_feedback": st.session_state.get("survey_1_app2_feedback"),
             "survey_2_feedback": st.session_state.get("survey_2_feedback"),
             "timestamp": timestamp_WIB(),
