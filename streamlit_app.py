@@ -227,24 +227,24 @@ def step_query_based():
     }
 
     category_label_map = {
-        "MaticDaily": "Matic harian",
-        "MaticSport": "Matic sport",
-        "MaticClassic": "Matic classic",
+        "MaticDaily": "Matic harian umum",
+        "MaticSport": "Matic harian bergaya sport",
+        "MaticClassic": "Matic harian bergaya classic",
         "SportNaked": "Sport naked",
         "SportFairing": "Sport fairing",
         "SportAdventure": "Sport adventure", 
-        "DualSport/Trail": "Trail / dual sport",
+        "DualSport/Trail": "Trail / dual sport (medan tanah)",
         "Moped": "Bebek",
         "Cruiser": "Cruiser",
         "RetroClassic": "Retro klasik",
-        "SportRetro": "Sport retro",
-        "SuperSportFairing": "Super sport fairing",
-        "SuperSportNaked": "Super sport naked",
-        "HyperSportFairing": "Hyper sport fairing",
-        "HyperSportNaked": "Hyper sport naked",
+        "SportRetro": "Sport bergaya retro",
+        "SuperSportFairing": "Super sport fairing (600-1000 cc)",
+        "SuperSportNaked": "Super sport naked (600-1000 cc)",
+        "HyperSportFairing": "Hyper sport fairing (1000+ cc)",
+        "HyperSportNaked": "Hyper sport naked (1000+ cc)",
         "MiniBike": "Motor mini",
         "MiniNaked": "Motor naked mini",
-        "Touring": "Touring"
+        "Touring": "Touring bergaya cruiser modern"
     }
 
     transmission_label_map = {
@@ -431,24 +431,24 @@ def step_input():
     }
 
     category_label_map = {
-        "MaticDaily": "Matic harian",
-        "MaticSport": "Matic sport",
-        "MaticClassic": "Matic classic",
+        "MaticDaily": "Matic harian umum",
+        "MaticSport": "Matic harian bergaya sport",
+        "MaticClassic": "Matic harian bergaya classic",
         "SportNaked": "Sport naked",
         "SportFairing": "Sport fairing",
         "SportAdventure": "Sport adventure", 
-        "DualSport/Trail": "Trail / dual sport",
+        "DualSport/Trail": "Trail / dual sport (medan tanah)",
         "Moped": "Bebek",
         "Cruiser": "Cruiser",
         "RetroClassic": "Retro klasik",
-        "SportRetro": "Sport retro",
-        "SuperSportFairing": "Super sport fairing",
-        "SuperSportNaked": "Super sport naked",
-        "HyperSportFairing": "Hyper sport fairing",
-        "HyperSportNaked": "Hyper sport naked",
+        "SportRetro": "Sport bergaya retro",
+        "SuperSportFairing": "Super sport fairing (600-1000 cc)",
+        "SuperSportNaked": "Super sport naked (600-1000 cc)",
+        "HyperSportFairing": "Hyper sport fairing (1000+ cc)",
+        "HyperSportNaked": "Hyper sport naked (1000+ cc)",
         "MiniBike": "Motor mini",
         "MiniNaked": "Motor naked mini",
-        "Touring": "Touring"
+        "Touring": "Touring bergaya cruiser modern"
     }
 
     transmission_label_map = {
@@ -805,27 +805,28 @@ def step_refinement():
         "FuelTank": (2, 30, 5),
         "WeightKG": (70, 450, 100),
         "FuelConsumptionKML": (10, 100, 40),
-        "Price": (10_000_000, 1_450_000_000, 25_000_000)
+        "Price": (10_000_000, 1_450_000_000_000, 25_000_000)
     }
 
     category_label_map = {
-        "MaticDaily": "Matic harian",
-        "MaticSport": "Matic sport",
-        "MaticClassic": "Matic classic",
+        "MaticDaily": "Matic harian umum",
+        "MaticSport": "Matic harian bergaya sport",
+        "MaticClassic": "Matic harian bergaya classic",
         "SportNaked": "Sport naked",
         "SportFairing": "Sport fairing",
         "SportAdventure": "Sport adventure", 
-        "DualSport/Trail": "Trail / dual sport",
+        "DualSport/Trail": "Trail / dual sport (medan tanah)",
         "Moped": "Bebek",
         "Cruiser": "Cruiser",
         "RetroClassic": "Retro klasik",
-        "SportRetro": "Sport retro",
-        "SuperSportFairing": "Super sport fairing",
-        "SuperSportNaked": "Super sport naked",
-        "HyperSportFairing": "Hyper sport fairing",
+        "SportRetro": "Sport bergaya retro",
+        "SuperSportFairing": "Super sport fairing (600-1000 cc)",
+        "SuperSportNaked": "Super sport naked (600-1000 cc)",
+        "HyperSportFairing": "Hyper sport fairing (1000+ cc)",
+        "HyperSportNaked": "Hyper sport naked (1000+ cc)",
         "MiniBike": "Motor mini",
         "MiniNaked": "Motor naked mini",
-        "Touring": "Touring modern"
+        "Touring": "Touring bergaya cruiser modern"
     }
 
     transmission_label_map = {
