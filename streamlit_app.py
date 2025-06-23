@@ -1107,7 +1107,8 @@ def step_survey_1():
     Ini ada survey untuk pengalaman dari aplikasi ke-2.
     Jika lupa, aplikasi ke-2 adalah:
     - Sistem carikan anda motor **yang sama persis/mendekati** dengan yang anda sebutkan.
-    - Sistem yang **menggunakan atribut/kriteria**** motor dengan **urutan prioritas**.
+    - Sistem yang **menggunakan atribut/kriteria** motor dengan **urutan prioritas**.
+
     
     - Beri tanda centang (✔️) pada pernyataan yang kamu **setujui**, 
     - biarkan kosong jika **tidak setuju**.
