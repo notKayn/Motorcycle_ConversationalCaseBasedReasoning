@@ -648,7 +648,7 @@ def step_rekomendasi():
                 )
                 st.session_state.final_chosen_model = model_final
                 st.success(f"✅ Model '{pilihan}' disimpan sebagai pilihan akhir.")
-                st.session_state.step = "survey_1"
+                st.session_state.step = "survey_1_app1"
                 st.rerun()
     else:
         st.info("📁 Belum ada rekam jejak pengguna lain dengan preferensi ini.")
@@ -697,7 +697,7 @@ def step_rekomendasi():
             )
             st.session_state.final_chosen_model = top1_model
             st.success("✅ Terima kasih! Rekomendasi telah disimpan.")
-            st.session_state.step = "survey_1"
+            st.session_state.step = "survey_1_app1"
             st.rerun()
 
     with col2:
@@ -735,7 +735,7 @@ def step_rekomendasi():
                 )
                 st.session_state.final_chosen_model = model_lain
                 st.success(f"✅ Model '{cocok_lain}' disimpan sebagai pilihan Anda.")
-                st.session_state.step = "survey_1"
+                st.session_state.step = "survey_1_app1"
                 st.rerun()
 
         elif cocok_lain == "Tidak ada":
@@ -749,7 +749,7 @@ def step_rekomendasi():
             st.warning("🚪 Serius nih? kamu masih bisa refine loh...")
             if st.button("Pokoknya, saya mau keluar!"):
                 st.session_state.refine_base_model = hasil.iloc[0].to_dict()
-                st.session_state.step = "survey_1"
+                st.session_state.step = "survey_1_app1"
                 st.rerun()
 
 
@@ -915,7 +915,7 @@ def step_refinement():
 
     if st.button("❌ Cancel dan keluar dari app"):
         st.success("Sesi refinement selesai. Menyimpan hasil final.")
-        st.session_state.step = "survey_1"
+        st.session_state.step = "survey_1_app1"
         st.rerun()
 
 def step_refine_prioritas():
@@ -1055,7 +1055,7 @@ def step_refinement_result():
             )
             st.session_state.final_chosen_model = top1_refinedmodel
             st.success("✅ Terima kasih! Rekomendasi telah disimpan.")
-            st.session_state.step = "survey_1"
+            st.session_state.step = "survey_1_app1"
             st.rerun()
 
     with col2:
@@ -1083,7 +1083,7 @@ def step_refinement_result():
                 )
                 st.session_state.final_chosen_model = hasil.iloc[0]  # atau hasil.iloc[0]
                 st.success(f"✅ Model '{pilih_lain}' disimpan sebagai pilihan Anda.")
-                st.session_state.step = "survey_1"
+                st.session_state.step = "survey_1_app1"
                 st.rerun()
 
         elif pilih_lain == "Tidak ada":
