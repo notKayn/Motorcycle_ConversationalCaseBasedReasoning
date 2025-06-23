@@ -1132,7 +1132,7 @@ def step_survey_1_app1():
     survey_answers_app1 = {}
 
     for key, text in statements.items():
-        survey_answers[key] = st.checkbox(f"{text}", key=f"survey1_{key}")
+        survey_answers_app1[key] = st.checkbox(f"{text}", key=f"survey1_{key}")
 
     saran = st.text_area("📝 Saran / komentar tambahan (opsional)", key="survey1_saran")
     survey_answers_app1["saran"] = saran
@@ -1174,7 +1174,7 @@ def step_survey_1_app2():
     survey_answers_app2 = {}
 
     for key, text in statements.items():
-        survey_answers[key] = st.checkbox(f"{text}", key=f"survey1_{key}")
+        survey_answers_app2[key] = st.checkbox(f"{text}", key=f"survey1_{key}")
 
     saran = st.text_area("📝 Saran / komentar tambahan (opsional)", key="survey1_saran")
     survey_answers_app2["saran"] = saran
