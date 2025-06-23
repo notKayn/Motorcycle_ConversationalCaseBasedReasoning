@@ -99,23 +99,18 @@ def step_identity():
     Inshallah, data anda akan dijaga dengan baik dan digunakan sebagaimana mestinya dengan bijak.
     """)
 
-    # st.markdown("Isi namamu disini")
     nama = st.text_input("**📝 Nama Lengkap**")
 
-    # st.markdown("🎂 Usia")
     usia = st.number_input("**🎂 Usia anda**", min_value=10, max_value=100, step=1)
 
-    # st.markdown("⚧️ Jenis Kelamin")
     gender = st.radio("**Jenis Kelamin**", ["Laki-laki", "Perempuan"], horizontal=True)
 
-    # st.markdown("📊 Seberapa paham kamu dengan spesifikasi motor?")
     tingkat = st.selectbox("**📊 Seberapa paham kamu dengan spesifikasi motor?**", [
         "1 - Saya hanya tahu secara umum.",
         "2 - Saya cukup mengerti bagian teknisnya."
     ])
 
     # Optional (boleh diaktifin kalau perlu)
-    # st.markdown("📧 Email (opsional)")
     email = st.text_input("**📧 Email (opsional)**", placeholder="Misalnya: kamu@gmail.com")
 
     if st.button("➡️ Lanjut ke Bagian Aplikasi 1"):
@@ -586,12 +581,6 @@ def step_rekomendasi():
         - **Scroll sampai bawah** ya, nanti ada umpan balik sederhana yang kamu harus pilih.
     """)
 
-    # st.subheader("📌 Preferensi kamu:")
-    # st.json(st.session_state.user_input)
-
-    # st.subheader("🎯 Prioritas:")
-    # st.json(st.session_state.prioritas_user)
-
     label_mapping = {
         "Category": "Kategori",
         "Displacement": "Kapasitas Mesin",
@@ -678,14 +667,12 @@ def step_rekomendasi():
 
 
     st.subheader("📝 Apakah Anda puas dengan hasil Top-1 dari rekomendasi ini?")
-    # st.markdown("##### Apakah Anda puas dengan hasil Top-1 dari rekomendasi ini?")
 
     col1, col2 = st.columns(2)
     with col1:
         if st.button("✅ Ya, Saya Puas"):
             top1_model = hasil.iloc[0].copy()
             top1_model["source"] = "cosine_similarity"
-            # simpan_case_model(st.session_state.user_input, top1_model, refined=False, user_ranked=False)
             simpan_case_model_gsheet(
                 user_input=st.session_state.user_input,
                 row_model=top1_model,
@@ -723,7 +710,6 @@ def step_rekomendasi():
                 idx = hasil[hasil["Model"] == cocok_lain].index[0]
                 model_lain = hasil.loc[idx].copy()
                 model_lain["source"] = "cosine_similarity"
-                # simpan_case_model(st.session_state.user_input, hasil.loc[idx], refined=False, user_ranked=True)
                 simpan_case_model_gsheet(
                     user_input=st.session_state.user_input,
                     row_model=model_lain,
@@ -1101,15 +1087,18 @@ def step_refinement_result():
                 st.rerun()
 
 def step_survey_1_app1():
-    st.subheader("📋 Survei Pengalaman - Aplikasi ke-2")
+    st.subheader("📋 Survei Pengalaman - Aplikasi ke-1")
 
     st.markdown("""
     Ini ada survey untuk pengalaman dari aplikasi ke-1.
     Jika lupa, aplikasi ke-1 adalah:
-    - Sistem carikan anda motor **yang sama persis/mendekati** dengan yang anda sebutkan.
-    - Sistem yang **menggunakan atribut/kriteria** motor dengan **urutan prioritas**.
-
+    - Sistem carikan anda motor **sama persis** dengan yang anda sebutkan.
+    - Sistem **tidak menggunakan perhitungan khusus** untuk mencari model motor yang sesuai dengan yang anda inginkan.
+    """)
     
+    st.markdown("---")
+
+    st.markdown("""
     - Beri tanda centang (✔️) pada pernyataan yang kamu **setujui**, 
     - biarkan kosong jika **tidak setuju**.
     """)
@@ -1150,8 +1139,11 @@ def step_survey_1_app2():
     Jika lupa, aplikasi ke-2 adalah:
     - Sistem carikan anda motor **yang sama persis/mendekati** dengan yang anda sebutkan.
     - Sistem yang **menggunakan atribut/kriteria** motor dengan **urutan prioritas**.
-
+    """)
     
+    st.markdown("---")
+
+    st.markdown("""
     - Beri tanda centang (✔️) pada pernyataan yang kamu **setujui**, 
     - biarkan kosong jika **tidak setuju**.
     """)
