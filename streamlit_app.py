@@ -1257,15 +1257,15 @@ def step_finish_evaluation():
         st.markdown(f"{i}. **{k}** (bobot: {v})")
 
     st.markdown("**Hasil Rekomendasi terakhir:**")
-    if "final_chosen_model" in st.session_state: # historical/cosine top1/cosine top2-6
-        st.success("Model yang dipilih olehmu sebagai rekomendasi akhir:")
-        tampilkan_model(st.session_state.final_chosen_model)
-        st.session_state.final_CRSCBR_answer = st.session_state.final_chosen_model.copy().to_dict()
-
-    elif "refine_base_model" in st.session_state: # keluar dari app
+    if "refine_base_model" in st.session_state: # keluar dari app
         st.info("Model rekomendasi terakhir dari sistem:") 
         tampilkan_model(st.session_state.refine_base_model)
         st.session_state.final_CRSCBR_answer = st.session_state.refine_base_model.copy()
+
+    elif "final_chosen_model" in st.session_state: # historical/cosine top1/cosine top2-6
+        st.success("Model yang dipilih olehmu sebagai rekomendasi akhir:")
+        tampilkan_model(st.session_state.final_chosen_model)
+        st.session_state.final_CRSCBR_answer = st.session_state.final_chosen_model.copy().to_dict()
 
     elif "hasil" in st.session_state: # where the fvck is this came from?
         st.warning("Model rekomendasi awal:")
