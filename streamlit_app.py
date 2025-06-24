@@ -978,12 +978,6 @@ def step_refinement_result():
     iterasi = len(st.session_state.get("refine_steps", []))
     st.markdown(f"##### 📊 Total Iterasi Refinement: {iterasi}")
 
-    # st.subheader("📌 Preferensi kamu:")
-    # st.json(st.session_state.user_input)
-
-    # st.subheader("🎯 Prioritas:")
-    # st.json(st.session_state.prioritas_user)
-
     label_mapping = {
         "Category": "Kategori",
         "Displacement": "Kapasitas Mesin",
@@ -1227,7 +1221,7 @@ def step_finish_evaluation():
     # Identitas
     st.subheader("👤 Identitas Pengguna")
     # st.json(st.session_state.get("user_identity", {}))
-    for k, v in st.session_state.get("user_input", {}).items():
+    for k, v in st.session_state.get("user_identity", {}).items():
         st.markdown(f"- **{k}**: {v}")
 
     # Input & hasil query-based
