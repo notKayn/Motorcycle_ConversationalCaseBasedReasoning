@@ -18,3 +18,7 @@ Untuk menjalankan program secara lokal, file yang digunakan adalah:
 Dengan catatan: pada file streamlit_app.py, harus memodifikasi terlebih dahulu beberapa fungsi agar sistem berjalan normal.
 Fungsi yang digunakan di dalam aplikasi saat ini menggunakan data yang disimpan pada cloud service untuk menambah dan membaca case-base.
 Jika fungsi membaca/menambah case-base dihilangkan, sistem masih bisa bekerja untuk menyediakan rekomendasi dengan menggunakan cosine similarity.
+
+---
+
+*Versi lain dari prototype sistem ini tersedia dalam bentuk jupyter notebook (Prototype.ipynb)
