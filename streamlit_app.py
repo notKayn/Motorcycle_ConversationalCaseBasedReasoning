@@ -22,7 +22,7 @@ st.markdown("---")
 # =================== Variable Global ===================
 @st.cache_data
 def load_df():
-    df = pd.read_excel("data_motor_excel_update1.xlsx")
+    df = pd.read_excel("data_motor_excel_update2.xlsx")
     for col in df.columns:
         if pd.api.types.is_string_dtype(df[col]):
             df[col] = df[col].astype(str)
@@ -30,7 +30,7 @@ def load_df():
 
 @st.cache_data
 def load_case_vector_df():
-    df = pd.read_pickle("case_vector_df_update1.pkl")
+    df = pd.read_pickle("case_vector_df_update2.pkl")
     for col in df.columns:
         if pd.api.types.is_string_dtype(df[col]):
             df[col] = df[col].astype(str)
@@ -38,7 +38,7 @@ def load_case_vector_df():
 
 @st.cache_data
 def load_final_df():
-    df = pd.read_pickle("final_df_update1.pkl")
+    df = pd.read_pickle("final_df_update2.pkl")
     for col in df.columns:
         if pd.api.types.is_string_dtype(df[col]):
             df[col] = df[col].astype(str)
@@ -66,6 +66,8 @@ if "selected_attrs" not in st.session_state:
     st.session_state.selected_attrs = []
 if "prioritas_user" not in st.session_state:
     st.session_state.prioritas_user = {}
+if "model_motor_user_gsheet" not in st.session_state:
+    st.session_state.model_motor_user_gsheet = {}
 
 
 
@@ -153,13 +155,18 @@ def step_intro_query_based():
     """)
     
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
+        if st.button("↩ Kembali ke Identitas"):
+            st.session_state.step = "identity"
+            st.rerun()
+    
+    with col2:
         if st.button("💡 Saya sudah paham"):
             st.session_state.step = "query_based"
             st.rerun()
 
-    with col2:
+    with col3:
         if st.button("😅 Belum paham nih"):
             st.session_state.step = "intro_query_for_dummies"
             st.rerun()
@@ -203,12 +210,12 @@ def step_query_based():
     
     Hasil akan muncul di bawah setelah anda menekan tombol "Cari motor yang cocok".
     """)
-    
+
     st.markdown("---")
 
-    # Label mapping untuk tampilan UI
     label_mapping = {
         "Category": "Kategori",
+        "GeneralUseCase": "Tipe penggunaan secara umum",
         "Displacement": "Kapasitas Mesin (cc)",
         "PowerHP": "Tenaga Maksimum (HP)",
         "Brand": "Merek",
@@ -247,12 +254,12 @@ def step_query_based():
         "Manual": "Manual",
         "DCT": "Dual Clutch Transmission"
     }
-    
+
     clutch_label_map = {
         "Wet": "Kopling basah",
         "Dry": "Kopling kering"
     }
-    
+
     engineconfig_label_map = {
         "NearSquare": "Near square (Performa rata diseluruh rentang putaran mesin)",
         "OverBore": "Over bore (Performa di putaran tinggi)",
@@ -260,6 +267,8 @@ def step_query_based():
     }
 
     opsi_atribut = list(label_mapping.keys())
+    numeric_attrs = ["Displacement", "PowerHP", "FuelTank", "WeightKG", "FuelConsumptionKML", "Price"]
+
     preferensi = {}
     selected_attrs = []
 
@@ -270,13 +279,49 @@ def step_query_based():
         if st.checkbox(f"Gunakan {label_id}", key=f"query_use_{attr}"):
             selected_attrs.append(attr)
 
-            if attr in ["Displacement", "PowerHP", "FuelTank", "WeightKG", "FuelConsumptionKML"]:
-                preferensi[attr] = st.number_input(f"{label_id}:", step=1, key=f"query_val_{attr}")
-            elif attr == "Price":
-                preferensi[attr] = st.number_input(f"{label_id}:", min_value=0, step=1_000_000, key=f"query_val_{attr}")
+            if attr in numeric_attrs:
+                min_val_dataset = int(df[attr].min())
+                max_val_dataset = int(df[attr].max())
+
+                target_val = st.number_input(
+                    f"Masukkan nilai {label_id}",
+                    min_value=min_val_dataset,
+                    max_value=max_val_dataset,
+                    value=min_val_dataset,
+                    step=1,
+                    key=f"target_{attr}"
+                )
+                preferensi[attr] = target_val
+
+            elif attr == "GeneralUseCase":
+                # Mapping label user-friendly -> value asli di dataset
+                generalusecase_label_map = {
+                    "Dipakai Harian": "Harian",
+                    "Perjalanan Jarak Jauh": "JarakJauh",
+                    "Koleksi Unik": "KoleksiUnik",
+                    "Medan Off-Road": "OffRoad",
+                    "Show Off / Gaya": "ShowOff",
+                    "Track Day / Balapan": "TrackDay"
+                }
+
+                # List label user-friendly
+                label_options = list(generalusecase_label_map.keys())
+
+                # Multiselect untuk user
+                pilihan_label = st.multiselect(
+                    f"Silakan pilih tipe penggunaannya (bisa lebih dari satu)",
+                    label_options,
+                    key=f"val_{attr}"
+                )
+
+                # Konversi kembali ke value asli dataset
+                val = [generalusecase_label_map[label] for label in pilihan_label]
+
+                st.session_state.user_input[attr] = val
+
             elif attr in df.columns:
                 options = sorted(df[attr].dropna().unique())
-            
+
                 if attr == "Category":
                     label_options = [category_label_map.get(o, o) for o in options]
                 elif attr == "ClutchType":
@@ -287,41 +332,50 @@ def step_query_based():
                     label_options = [transmission_label_map.get(o, o) for o in options]
                 else:
                     label_options = options
-            
+
                 pilihan_label = st.selectbox(f"Silakan isi kolom atribut {label_id} di bawah ini.", label_options, key=f"val_{attr}")
                 index = label_options.index(pilihan_label)
                 val = options[index]
-                preferensi[attr] = val 
+                preferensi[attr] = val
+
             else:
                 preferensi[attr] = st.text_input(f"{label_id}:", key=f"query_val_{attr}")
 
     st.markdown("---")
 
-    if st.button("🔎 Cari Motor yang Cocok"):
-        hasil = df.copy()
-        for attr, val in preferensi.items():
-            # Kalau numeric, cocokkan dengan toleransi kecil karena bisa float
-            if pd.api.types.is_numeric_dtype(df[attr]):
-                hasil = hasil[np.isclose(hasil[attr], float(val), atol=1e-1)]
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("↩ Kembali ke halaman sebelumnya"):
+            st.session_state.step = "intro_query_based"
+            st.rerun()
+
+    with col2:
+        if st.button("🔎 Cari Motor yang Cocok"):
+            hasil = df.copy()
+            for attr, val in preferensi.items():
+                if attr in numeric_attrs:
+                    lower_bound = val * 0.95
+                    upper_bound = val * 1.05
+                    hasil = hasil[(hasil[attr] >= lower_bound) & (hasil[attr] <= upper_bound)]
+                else:
+                    hasil = hasil[hasil[attr] == val]
+
+            if not hasil.empty:
+                st.success(f"🎉 Ditemukan {len(hasil)} motor yang cocok dengan preferensimu!")
+                for i, row in hasil.iterrows():
+                    tampilkan_model(row, judul=f"🏍️ {row['Model']}")
             else:
-                hasil = hasil[hasil[attr] == val]
+                st.warning("😕 Tidak ada motor yang cocok dengan preferensimu.")
 
-        if not hasil.empty:
-            st.success(f"🎉 Ditemukan {len(hasil)} motor yang cocok dengan preferensimu!")
-            for i, row in hasil.iterrows():
-                tampilkan_model(row, judul=f"🏍️ {row['Model']}")
-        else:
-            st.warning("😕 Tidak ada motor yang 100% cocok dengan preferensimu.")
-
-        st.session_state.query_result = hasil.to_dict(orient="records")
-        st.session_state.query_input = preferensi
-        st.session_state.query_has_run = True  # ✅ Flag bahwa pencarian udah dijalankan
+            st.session_state.query_result = hasil.to_dict(orient="records")
+            st.session_state.query_input = preferensi
+            st.session_state.query_has_run = True
 
     if st.session_state.get("query_has_run"):
         if st.button("➡️ Lanjut ke Bagian Aplikasi 2"):
             st.session_state.step = "intro_CRSCBR"
             st.rerun()
-
 
 def step_intro_CRSCBR():
     st.subheader("🤖 Aplikasi 2: Sistem Rekomendasi Conversational Case-Based Reasoning")
@@ -350,16 +404,22 @@ def step_intro_CRSCBR():
         Gimana? yang ini mudah dipahami kan?
     """)
 
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
+        if st.button("↩ Kembali ke halaman sebelumnya"):
+            st.session_state.step = "intro_query_based"
+            st.rerun()
+    
+    with col2:
         if st.button("Oke, paham"):
             st.session_state.step = "input"
             st.rerun()
 
-    with col2:
+    with col3:
         if st.button("Masih belum, hehe"):
             st.session_state.step = "intro_CRSCBR_for_dummies"
             st.rerun()
+    
 
 
 def step_intro_CRSCBR_for_dummies():
@@ -396,14 +456,15 @@ def step_input():
     st.subheader("🛠️ Langkah 1: Pilih Atribut dan Isi Preferensi")
 
     opsi_atribut = [
-        "Category", "Displacement", "PowerHP", "Brand", "Transmission",
+        "Category", "GeneralUseCase", "Displacement", "PowerHP", "Brand", "Transmission",
         "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
         "FuelConsumptionKML", "Price"
     ]
 
     # Label dalam Bahasa Indonesia
     label_mapping = {
-        "Category": "Kategori",
+        "Category": "Kategori/jenis motor",
+        "GeneralUseCase": "Tipe penggunaan secara umum",
         "Displacement": "Kapasitas Mesin (dalam satuan cc)",
         "PowerHP": "Tenaga Maksimum (*dalam satuan Horsepower*)",
         "Brand": "Merek",
@@ -488,11 +549,36 @@ def step_input():
                     f"{label}:", 10_000_000, 1_500_000_000,
                     25_000_000, step=1_000_000, key=f"val_{attr}"
                 )
-                
+
+            elif attr == "GeneralUseCase":
+                # Mapping label user-friendly -> value asli di dataset
+                generalusecase_label_map = {
+                    "Dipakai Harian": "Harian",
+                    "Perjalanan Jarak Jauh": "JarakJauh",
+                    "Koleksi Unik": "KoleksiUnik",
+                    "Medan Off-Road": "OffRoad",
+                    "Show Off / Gaya": "ShowOff",
+                    "Track Day / Balapan": "TrackDay"
+                }
+
+                # List label user-friendly
+                label_options = list(generalusecase_label_map.keys())
+
+                # Multiselect untuk user
+                pilihan_label = st.multiselect(
+                    f"Silakan pilih {label} (bisa lebih dari satu)",
+                    label_options,
+                    key=f"val_{attr}"
+                )
+
+                # Konversi kembali ke value asli dataset
+                val = [generalusecase_label_map[label] for label in pilihan_label]
+
+                st.session_state.user_input[attr] = val
+
             elif attr in df.columns:
                 options = sorted(df[attr].dropna().unique())
-                
-                # Konversi label ke user-friendly jika perlu
+
                 if attr == "Category":
                     label_options = [category_label_map.get(o, o) for o in options]
                 elif attr == "ClutchType":
@@ -502,21 +588,29 @@ def step_input():
                 elif attr == "Transmission":
                     label_options = [transmission_label_map.get(o, o) for o in options]
                 else:
-                    label_options = options  # default, no label mapping
-            
-                # Tampilkan label tapi simpan value asli
+                    label_options = options
+
                 pilihan_label = st.selectbox(f"Silakan isi kolom atribut {label} di bawah ini.", label_options, key=f"val_{attr}")
                 index = label_options.index(pilihan_label)
                 val = options[index]
+
 
             else:
                 val = st.text_input(f"{label}:", key=f"val_{attr}")
 
             st.session_state.user_input[attr] = val
 
-    if st.button("➡️ Lanjut ke Prioritas") and st.session_state.selected_attrs:
-        st.session_state.step = "prioritas"
-        st.rerun()
+    col1, col2 = st.columns(2)
+
+    with col1:
+        if st.button("↩ Kembali ke halaman sebelumnya"):
+            st.session_state.step = "intro_CRSCBR"
+            st.rerun()
+
+    with col2:
+        if st.button("➡️ Lanjut ke Prioritas") and st.session_state.selected_attrs:
+            st.session_state.step = "prioritas"
+            st.rerun()
 
 def step_prioritas():
     st.subheader("🎯 Langkah 2: Tentukan Prioritas Atribut")
@@ -529,8 +623,9 @@ def step_prioritas():
     """)
 
     label_mapping = {
+        "GeneralUseCase": "Tipe penggunaan secara umum (sebaiknya diletakkan dibawah kategori/jenis motor (bila ada))",
         "Brand": "Merek",
-        "Category": "Kategori",
+        "Category": "Kategori/jenis motor",
         "Transmission": "Transmisi",
         "ClutchType": "Jenis Kopling",
         "Bore": "Diameter Silinder (mm)",
@@ -569,6 +664,10 @@ def step_prioritas():
             st.session_state.step = "rekomendasi"
             st.rerun()
 
+    if st.button("↩ Kembali ke halaman sebelumnya"):
+        st.session_state.step = "input"
+        st.rerun()
+
 
 
 def step_rekomendasi():
@@ -582,6 +681,7 @@ def step_rekomendasi():
     """)
 
     label_mapping = {
+        "GeneralUseCase": "Jenis penggunaan secara umum",
         "Category": "Kategori",
         "Displacement": "Kapasitas Mesin",
         "PowerHP": "Tenaga Maksimum",
@@ -626,15 +726,17 @@ def step_rekomendasi():
             if st.button("✅ Gunakan model ini sebagai pilihan akhir"):
                 model_final = final_df[final_df["Model"] == pilihan].iloc[0]
                 model_final["source"] = "historical_case"
-                simpan_case_model_gsheet(
-                    user_input=st.session_state.user_input,
-                    row_model=model_final,
-                    spreadsheet_id='193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
-                    sheet_name="case_base",
-                    refined=False,
-                    refine_log=[],
-                    user_ranked=False
-                )
+
+                st.session_state.model_motor_user_gsheet = {
+                    "user_input": st.session_state.user_input,
+                    "row_model": model_final.to_dict(),
+                    "spreadsheet_id": '193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
+                    "sheet_name": "case_base",
+                    "refined": False,
+                    "refine_log": [],
+                    "user_ranked": False
+                }
+                
                 st.session_state.final_chosen_model = model_final
                 st.success(f"✅ Model '{pilihan}' disimpan sebagai pilihan akhir.")
                 # st.session_state.step = "survey_1_app1"
@@ -674,15 +776,17 @@ def step_rekomendasi():
         if st.button("✅ Ya, Saya Puas"):
             top1_model = hasil.iloc[0].copy()
             top1_model["source"] = "cosine_similarity"
-            simpan_case_model_gsheet(
-                user_input=st.session_state.user_input,
-                row_model=top1_model,
-                spreadsheet_id='193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
-                sheet_name="case_base",
-                refined=False,
-                refine_log=[],
-                user_ranked=False
-            )
+
+            st.session_state.model_motor_user_gsheet = {
+                "user_input": st.session_state.user_input,
+                "row_model": top1_model.to_dict(),
+                "spreadsheet_id": '193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
+                "sheet_name": "case_base",
+                "refined": False,
+                "refine_log": [],
+                "user_ranked": False
+            }
+
             st.session_state.final_chosen_model = top1_model
             st.success("✅ Terima kasih! Rekomendasi telah disimpan.")
             # st.session_state.step = "survey_1_app1"
@@ -712,15 +816,17 @@ def step_rekomendasi():
                 idx = hasil[hasil["Model"] == cocok_lain].index[0]
                 model_lain = hasil.loc[idx].copy()
                 model_lain["source"] = "cosine_similarity"
-                simpan_case_model_gsheet(
-                    user_input=st.session_state.user_input,
-                    row_model=model_lain,
-                    spreadsheet_id='193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
-                    sheet_name="case_base",
-                    refined=False,
-                    refine_log=[],
-                    user_ranked=True
-                )
+
+                st.session_state.model_motor_user_gsheet = {
+                    "user_input": st.session_state.user_input,
+                    "row_model": model_lain.to_dict(),
+                    "spreadsheet_id": '193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
+                    "sheet_name": "case_base",
+                    "refined": False,
+                    "refine_log": [],
+                    "user_ranked": True
+                }
+
                 st.session_state.final_chosen_model = model_lain
                 st.success(f"✅ Model '{cocok_lain}' disimpan sebagai pilihan Anda.")
                 # st.session_state.step = "survey_1_app1"
@@ -770,13 +876,14 @@ def step_refinement():
     st.markdown("##### ✍️ Ubah Preferensi yang Ingin Diperbaiki:")
 
     opsi_atribut = [
-        "Category", "Displacement", "PowerHP", "Brand", "Transmission",
+        "Category", "GeneralUseCase", "Displacement", "PowerHP", "Brand", "Transmission",
         "ClutchType", "EngineConfig", "FuelTank", "WeightKG",
         "FuelConsumptionKML", "Price"
     ]
 
     label_mapping = {
         "Category": "Kategori",
+        "GeneralUseCase": "Tipe penggunaan secara umum",
         "Displacement": "Kapasitas Mesin (cc)",
         "PowerHP": "Tenaga Maksimum (HP)",
         "Brand": "Merek",
@@ -849,7 +956,41 @@ def step_refinement():
         if aktif:
             refine_selected_attrs.append(attr)
 
-            if attr in df.columns and df[attr].dtype == object:
+            # GeneralUseCase khusus karena bisa multi-select
+            if attr == "GeneralUseCase":
+                # Ambil semua kolom yang diawali dengan "GeneralUseCase_"
+                generalusecase_cols = [col for col in final_df.columns if col.startswith("GeneralUseCase_")]
+                opsi = [col.replace("GeneralUseCase_", "") for col in generalusecase_cols]
+
+                # Mapping label biar enak dibaca
+                generalusecase_label_map = {
+                    "Harian": "Harian / Kerja",
+                    "JarakJauh": "Perjalanan jauh",
+                    "KoleksiUnik": "Koleksi unik",
+                    "OffRoad": "Off-road",
+                    "ShowOff": "Gaya / Show-off",
+                    "TrackDay": "Track day / Sirkuit"
+                }
+                label_opsi = [generalusecase_label_map.get(o, o) for o in opsi]
+
+                # Tentukan default pilihan
+                if isinstance(val_lama, list):
+                    default_labels = [generalusecase_label_map.get(v, v) for v in val_lama]
+                else:
+                    default_labels = []
+
+                pilihan_label = st.multiselect(
+                    f"Update {label_id}:",
+                    options=label_opsi,
+                    default=default_labels,
+                    key=f"refine_val_{attr}"
+                )
+
+                # Konversi balik ke format asli di dataset
+                val_baru = [opsi[label_opsi.index(lbl)] for lbl in pilihan_label]
+
+
+            elif attr in df.columns and df[attr].dtype == object:
                 opsi = sorted(df[attr].dropna().unique())
             
                 # Konversi label untuk tampil ke user
@@ -909,6 +1050,7 @@ def step_refinement():
         st.session_state.step = "survey_1_app2"
         st.rerun()
 
+
 def step_refine_prioritas():
     st.subheader("🎯 Langkah 5: Mengurutkan Prioritas Atribut Refinement")
 
@@ -920,6 +1062,7 @@ def step_refine_prioritas():
     label_mapping = {
         "Brand": "Merek",
         "Category": "Kategori",
+        "GeneralUseCase": "Tipe penggunaan secara umum (sebaiknya diletakkan dibawah kategori/jenis motor (bila ada))",
         "Transmission": "Transmisi",
         "ClutchType": "Jenis Kopling",
         "Bore": "Diameter Silinder (mm)",
@@ -952,6 +1095,8 @@ def step_refine_prioritas():
             prioritas[pilihan] = urutan - i
             used.append(pilihan)
 
+    
+
     if len(prioritas) == urutan:
         if st.button("🚀 Hitung Ulang Rekomendasi"):
             st.session_state.prioritas_user = prioritas
@@ -966,6 +1111,10 @@ def step_refine_prioritas():
             st.session_state.step = "refinement_result"
             st.rerun()
 
+    if st.button("↩ Kembali ke halaman sebelumnya"):
+        st.session_state.step = "refinement"
+        st.rerun()
+        
 def step_refinement_result():
     
     st.subheader("✅ Langkah 6: Hasil Rekomendasi Setelah Refinement")
@@ -1029,15 +1178,17 @@ def step_refinement_result():
         if st.button("✅ Saya puas dengan refined model motor Top-1"):
             top1_refinedmodel = hasil.iloc[0].copy()
             top1_refinedmodel["source"] = "cosine_similarity"
-            simpan_case_model_gsheet(
-                user_input=st.session_state.user_input,
-                row_model=top1_refinedmodel,
-                spreadsheet_id='193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
-                sheet_name="case_base",
-                refined=True,
-                refine_log=st.session_state.get("refine_steps", []),
-                user_ranked=False
-            )
+            
+            st.session_state.model_motor_user_gsheet = {
+                "user_input": st.session_state.user_input,
+                "row_model": top1_refinedmodel.to_dict(),
+                "spreadsheet_id": '193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
+                "sheet_name": "case_base",
+                "refined": True,
+                "refine_log": st.session_state.get("refine_steps", []),
+                "user_ranked": False
+            }
+
             st.session_state.final_chosen_model = top1_refinedmodel
             st.success("✅ Terima kasih! Rekomendasi telah disimpan.")
             # st.session_state.step = "survey_1_app1"
@@ -1058,6 +1209,7 @@ def step_refinement_result():
         if pilih_lain in opsi_model_refine:
             if st.button("✅ Simpan model ini"):
                 idx = hasil[hasil["Model"] == pilih_lain].index[0]
+                
                 simpan_case_model_gsheet(
                     user_input=st.session_state.user_input,
                     row_model=hasil.loc[idx].copy(),
@@ -1067,6 +1219,17 @@ def step_refinement_result():
                     refine_log=st.session_state.get("refine_steps", []),
                     user_ranked=True
                 )
+                
+                st.session_state.model_motor_user_gsheet = {
+                    "user_input": st.session_state.user_input,
+                    "row_model": hasil.loc[idx].to_dict(),
+                    "spreadsheet_id": '193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM',
+                    "sheet_name": "case_base",
+                    "refined": True,
+                    "refine_log": st.session_state.get("refine_steps", []),
+                    "user_ranked": True
+                }
+
                 st.session_state.final_chosen_model = hasil.iloc[0]  # atau hasil.iloc[0]
                 st.success(f"✅ Model '{pilih_lain}' disimpan sebagai pilihan Anda.")
                 # st.session_state.step = "survey_1_app1"
@@ -1358,6 +1521,7 @@ def step_finish_evaluation():
     st.session_state.user_has_saved = False
     
     # Simpan hasil akhir
+    case_id_universal = generate_case_id()
     if st.button("💾 Simpan hasil jawabanmu"):
         final_data = {
             "identity": st.session_state.get("user_identity"),
@@ -1371,11 +1535,36 @@ def step_finish_evaluation():
             "survey_1_app2_feedback": st.session_state.get("survey_1_app2_feedback"),
             "survey_2_feedback": st.session_state.get("survey_2_feedback"),
             "timestamp": timestamp_WIB(),
-            "case_id": generate_case_id()
+            "case_id": case_id_universal
         }
 
         data_untuk_gsheet = format_data_for_gsheet(final_data)
         success, msg = kirim_data_ke_gsheet(data_untuk_gsheet, spreadsheet_id='193gZBpZUWYv1GJxvgibbf04uR_txgJPiFoEIGTuVPSM', sheet_name="hasil_user_testing")
+
+
+        model_motor_pilihan_user_sebelumnya = st.session_state.get("model_motor_user_gsheet", {})
+        model_motor_user_siap_kirim = {
+            "case_id": case_id_universal,
+            "user_input": model_motor_pilihan_user_sebelumnya.get("user_input", {}),
+            "row_model": model_motor_pilihan_user_sebelumnya.get("row_model", {}),
+            "spreadsheet_id": model_motor_pilihan_user_sebelumnya.get("spreadsheet_id", ""),
+            "sheet_name": model_motor_pilihan_user_sebelumnya.get("sheet_name", ""),
+            "refined": model_motor_pilihan_user_sebelumnya.get("refined", False),
+            "refine_log": model_motor_pilihan_user_sebelumnya.get("refine_log", []),
+            "user_ranked": model_motor_pilihan_user_sebelumnya.get("user_ranked", False)
+        }
+
+        simpan_case_model_gsheet(
+            case_id=model_motor_user_siap_kirim["case_id"],
+            user_input=model_motor_user_siap_kirim["user_input"],
+            row_model=model_motor_user_siap_kirim["row_model"],
+            spreadsheet_id=model_motor_user_siap_kirim["spreadsheet_id"],
+            sheet_name=model_motor_user_siap_kirim["sheet_name"],
+            refined=model_motor_user_siap_kirim["refined"],
+            refine_log=model_motor_user_siap_kirim["refine_log"],
+            user_ranked=model_motor_user_siap_kirim["user_ranked"]
+        )
+
 
         # filepath = simpan_ke_file_json_agregat(final_data)
         st.success("✅ Hasil berhasil disimpan!")
@@ -1385,6 +1574,9 @@ def step_finish_evaluation():
     if st.session_state.get("user_has_saved", False):
         st.success("Jika kamu masih ingin mencoba lagi dari awal, silakan refresh halamannya ya 🙏")
 
+    if st.button("↩ Kembali ke halaman sebelumnya"):
+        st.session_state.step = "survey_2"
+        st.rerun()
 
 
 
@@ -1406,8 +1598,17 @@ def buat_user_vector_weighted(user_input, prioritas_user, final_df, df_mentah):
     for attr, val in user_input.items():
         weight = prioritas_user.get(attr, 1.0)  # default ke 1.0 kalau tidak ditemukan
 
+        # GeneralUseCase (multi-label)
+        if attr == "GeneralUseCase" and isinstance(val, list):
+            for v in val:
+                col_name = f"GeneralUseCase_{v}"
+                if col_name in final_df.columns:
+                    idx = col_index[col_name]
+                    user_vector[idx] = 1.0
+                    weight_vector[idx] = weight
+
         # One-hot encoding
-        if attr in ["Brand", "Category", "Transmission", "ClutchType", "EngineConfig"]:
+        elif attr in ["Brand", "Category", "Transmission", "ClutchType", "EngineConfig"]:
             prefix = attr.replace(" ", "")
             col_name = f"{prefix}_{val}".lower()
             match = [col for col in final_df.columns if col.lower() == col_name]
@@ -1472,8 +1673,37 @@ def rekomendasi_cosine_weighted(user_vec, weight_vec, case_matrix, final_df, use
         - 0.01 * final_df_with_score["FuelPenalty"]
     )
 
-    # Urutkan dan ambil top-N
-    sorted_df = final_df_with_score.sort_values(by="FinalScore", ascending=False)
+
+    # Sorting berlapis dengan tie_threshold
+    sorted_df = []
+    tie_threshold = 0.02  # Threshold untuk menentukan cluster
+    df_remaining = final_df_with_score.copy()
+    
+    while not df_remaining.empty and len(sorted_df) < top_n:
+        # Ambil skor tertinggi saat ini
+        top_score = df_remaining["FinalScore"].max()
+        
+        # Ambil semua motor yang skornya dalam range tie_threshold
+        cluster = df_remaining[
+            (df_remaining["FinalScore"] >= top_score - tie_threshold)
+        ]
+        
+        # Urutkan dalam cluster ini pakai rating → vote
+        cluster_sorted = cluster.sort_values(
+            by=["StarRatingof5", "UsersofRating"],
+            ascending=[False, False]
+        )
+        
+        # Tambahkan ke hasil
+        sorted_df.append(cluster_sorted)
+        
+        # Buang yang sudah masuk cluster dari df_remaining
+        df_remaining = df_remaining.drop(cluster_sorted.index)
+
+    # Gabungkan semua cluster
+    sorted_df = pd.concat(sorted_df)
+
+    # Ambil top_n
     return sorted_df.head(top_n)
 
 
@@ -1584,11 +1814,11 @@ def hitung_model_terpopuler_dari_case_gsheet(user_input, spreadsheet_id, sheet_n
 # ==========================
 # Simpan case model ke Google Sheets
 # ==========================
-def simpan_case_model_gsheet(user_input, row_model, spreadsheet_id, sheet_name="case_base", refined=False, refine_log=None, user_ranked=False):
+def simpan_case_model_gsheet(case_id, user_input, row_model, spreadsheet_id, sheet_name="case_base", refined=False, refine_log=None, user_ranked=False):
 
     # Siapkan data case
     case_data = {
-        "case_id": generate_case_id(),
+        "case_id": case_id,
         "user_input": json.dumps(user_input, ensure_ascii=False),
         "is_refined": refined,
         "refine_steps": json.dumps(refine_log if refine_log else [], ensure_ascii=False),
@@ -1636,11 +1866,18 @@ def write_log_refine_iteration(refine_queue, user_input_before):
 # ==========================
 def tampilkan_model(row, judul=None):
     atribut_kelompok = {
+        
+        "🏍️ Jenis Model Motor": [
+            "GeneralUseCase", "Brand", "Category"
+        ],
+        "📝 Rating motor oleh pengguna lain": [
+            "StarRatingof5", "UsersofRating"
+        ],
         "🔧 Spesifikasi Mesin": [
             "Displacement", "PowerHP", "Bore", "Stroke", "PistonCount", "EngineConfig"
         ],
         "⚙️ Transmisi & Struktur": [
-            "Transmission", "ClutchType", "WeightKG", "Brand", "Category"
+            "Transmission", "ClutchType", "WeightKG"
         ],
         "⛽ Konsumsi & Kapasitas": [
             "FuelTank", "FuelConsumptionKML"
@@ -1654,6 +1891,7 @@ def tampilkan_model(row, judul=None):
     }
 
     label_mapping = {
+        "GeneralUseCase": "Jenis penggunaan secara umum",
         "Brand": "Merek",
         "Category": "Kategori",
         "Transmission": "Transmisi",
@@ -1688,7 +1926,7 @@ def tampilkan_model(row, judul=None):
                             formatted = value
                     elif attr == "Similarity":
                         try:
-                            formatted = f"{float(value)*100:.4f}%"
+                            formatted = f"{float(value)*1:.4f}%"
                         except:
                             formatted = value
                     elif isinstance(value, float):
@@ -1736,3 +1974,4 @@ elif st.session_state.step == "survey_2":
     step_survey_2()
 elif st.session_state.step == "finish":
     step_finish_evaluation()
+
